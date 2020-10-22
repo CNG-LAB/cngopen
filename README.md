@@ -1,1 +1,1 @@
-# cng-open
+# cngopen
