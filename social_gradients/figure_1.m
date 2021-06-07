@@ -24,8 +24,6 @@ BoSurfStatViewData(mean(G1(:,keeptest==1),2),SN,'')
 colormap(flipud([cbrewer('seq','Greys',99);0,0,0]))
 exportfigbo(f,[RPATH 'F1.mean.G1.png'],'png', 10)
 
-% project the data on the vertices
-
 
 % load the gradients
 
@@ -303,6 +301,8 @@ for i = 1
     
 end
 
+save('/Users/sofievalk/Documents/GitHub/micasoft/sandbox/sofie/social_gradients/mask.mat','mask')
+save('/Users/sofievalk/Documents/GitHub/micasoft/sandbox/sofie/social_gradients/SN.mat','SN')
 
 
 
