@@ -1,0 +1,145 @@
+% gradient construction
+% for more details see also brainspace.readthedocs.io
+
+% gradient in humans and their differences: 
+for heritable_gradients_mpc = 1
+    gm = GradientMaps('kernel','na','approach','dm','align','pa');
+    gm = gm.fit({MPCm, MPCherit});
+    
+    mpc_g1 = gm.aligned{1}
+    
+    heri_ct = zeros(1,20484);
+    for i = 1:200
+        heri_ct(:,find(parcels400==i+1)) =mpc_g1(i);
+    end
+    for i = 1:200
+        heri_ct(:,find(parcels400==i+1001)) = mpc_g1(i+200);
+    end
+    
+    f = figure,
+    BoSurfStatViewData(-heri_ct,SN,'')
+    colormap(batlow)
+  
+     mpc_h = rescale(gm.aligned{2}(:,1))
+     
+     heri_ct = zeros(1,20484);
+     for i = 1:200
+         heri_ct(:,find(parcels400==i+1)) =mpc_h(i)-mpc_g1(i);
+     end
+     for i = 1:200
+         heri_ct(:,find(parcels400==i+1001)) = mpc_h(i+200);
+     end
+     
+     f = figure,
+     BoSurfStatViewData(-heri_ct,SN,'')
+     colormap(bilbao)
+     
+    f = figure,
+    scatter(-gm.aligned{1}(:,1),-gm.aligned{2}(:,1),'filled','k'),lsline
+    xlim([-0.15 0.21])
+    
+    % heritability along principal gradient
+    bins1   = [];
+    bins1   = quantileranks(-fc_g1(:,1),10);
+  
+    for j=1:10
+        for i = 1:10
+            mean_stdfc_m(j,i) = mean(mean(fc400std(find(bins1==j),find(bins1==i))))
+        end
+    end
+    
+    f = figure,
+    imagesc(mean_stdfc_m,[0.1 0.2])
+    colormap((cbrewer('seq','Reds',99)))
+    colorbar
+  
+end
+
+for heritable_gradients_fc = 1
+    gm = GradientMaps('kernel','na','approach','dm','align','pa');
+    gm = gm.fit({fc400m, fc400herit});
+    
+    mpc_g1 = gm.aligned{1}
+    
+    heri_ct = zeros(1,20484);
+    for i = 1:200
+        heri_ct(:,find(parcels400==i+1)) =mpc_g1(i);
+    end
+    for i = 1:200
+        heri_ct(:,find(parcels400==i+1001)) = mpc_g1(i+200);
+    end
+    
+    f = figure,
+    BoSurfStatViewData(-heri_ct,SN,'')
+    colormap(batlow)
+  
+     mpc_h = rescale(gm.aligned{2}(:,1))
+     
+     heri_ct = zeros(1,20484);
+     for i = 1:200
+         heri_ct(:,find(parcels400==i+1)) =mpc_h(i)-mpc_g1(i);
+     end
+     for i = 1:200
+         heri_ct(:,find(parcels400==i+1001)) = mpc_h(i+200);
+     end
+     
+     f = figure,
+     BoSurfStatViewData(-heri_ct,SN,'')
+     colormap(bilbao)
+     
+    f = figure,
+    scatter(-gm.aligned{1}(:,1),-gm.aligned{2}(:,1),'filled','k'),lsline
+    xlim([-0.15 0.21])
+end
+
+
+gm = GradientMaps('kernel','na','approach','dm','align','pa');
+gm = gm.fit({MPCm,fc400m});
+
+mpc2mpc = gm.aligned{1}(:,1)
+fc2mpc  = gm.aligned{2}(:,1)
+
+[c1] = rescale(-mpc2mpc)
+[f1] = rescale(-fc2mpc)
+
+heri_ct = zeros(1,20484);
+for i = 1:200
+    heri_ct(:,find(parcels400==i+1)) = c1(i) - f1(i);
+end
+for i = 1:200
+    heri_ct(:,find(parcels400==i+1001)) = c1(i+200)-f1(i+200);
+end
+
+f = figure,
+BoSurfStatViewData(heri_ct,SN,'')
+colormap(cork)
+BoSurfStatColLim([-1 1])
+
+
+gm = GradientMaps('kernel','na','approach','dm','align','pa');
+gm = gm.fit({mpc_matrix.cov_mean,FC_Markov});
+
+mc_mpc_a_g = gm.gradients{1};
+mc_fc_a_g  = gm.gradients{2};
+
+[mc_rank_mpc] =rescale(-mc_mpc_a_g(:,1))
+[mc_rank_fc] = rescale(mc_fc_a_g(:,3))
+
+mc_diff = mc_rank_mpc-mc_rank_fc;
+
+heri_ct = zeros(1,length(maskmaskvo.x1));
+for i = 1:91
+    heri_ct(:,find(mask_markov==i)) = mc_diff(i);
+end
+for i = 1:91
+    heri_ct(:,find(mask_markov==i+1000)) = mc_diff(i+91);
+end
+
+f = figure,
+BoSurfStatViewData(heri_ct,surf_m,'')
+colormap(cork)
+BoSurfStatColLim([-1 1])
+
+
+
+
