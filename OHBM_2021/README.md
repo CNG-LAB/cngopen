@@ -7,6 +7,8 @@ This repo contains our OHBM 2021 posters and here is the jitsi link to meet: htt
 
 Our posters:
 
+**1328**: Asymmetry of large-scale functional organization: heritable and phylogenetic profiles (Wan et al.)
+
 **1478**: Genetic association of blood pressure with cortical microstructure and functional connectivity (Schaare et al.)
 
 **1691**: Heritability of hippocampal microstructural and functional organization (Bayrak et al.)
