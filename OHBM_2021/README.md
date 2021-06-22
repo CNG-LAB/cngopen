@@ -1,6 +1,6 @@
 # OHBM 2021 work of the cognitive neurogenetics group
 
-You will find out posters here and a link to our jitsi where you can find us during the poster-session hours.
+You will find out posters here and a link to our jitsi where you can find us here: https://meet.jit.si/OHBM2021_meet_cng during the poster-session hours.
 
 Posters:
 
