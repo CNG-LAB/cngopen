@@ -1,5 +1,6 @@
 
-# Changing the social brain
+# GENETIC UNCOUPLING OF STRUCTURE AND FUNCTION IN HUMAN TRANSMODAL CORTEX
+
 > Data and code to think about structure-function associations <br />
 > From "Genetic and phylogenetic uncoupling of structure and function in human transmodal cortex", Valk et al., preprint  <br />
 > https://www.biorxiv.org/content/10.1101/2021.06.08.447522v1 <br />
