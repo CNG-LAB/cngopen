@@ -1,10 +1,11 @@
 import os
-import h5py
 import numpy as np
 from scipy.io import loadmat
-
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib.colors as colors
+    
 # get surface infos
-
 ddir = '../data/tout_group/'
 
 # get surface infos
@@ -52,13 +53,58 @@ zRDG = -RDGsurf['coord'][2,:]          # (1024,)
 triRDG = RDGsurf['tri']                 # (2044, 3)
 
 
+# hippocampal subfield plotting functions
+def plot_surf_upper2(xS, yS, zS, triS, data, cmap, cmin, cmax):
+
+    sns.set_style('white')
+    
+    x = xS          
+    y = yS
+    z = zS       
+
+    triangles = triS - 1 # matlab-python index matching 
+
+    c = data
+
+    colors = np.mean( [c[triangles[:,0]], c[triangles[:,1]], 
+                       c[triangles[:,2]]], axis = 0);
+
+    # Displays the 4D graphic.
+    fig = plt.figure(figsize=(12,12));
+    ax  = fig.add_subplot(1, 1, 1, projection='3d')
+    ax.view_init(azim=240)
+
+    surf = ax.plot_trisurf(x,y,z,
+                           triangles = triangles, 
+                           cmap = cmap,
+                           edgecolor = None,
+                           linewidth = 0, 
+                           antialiased = False)
+    surf.set_array(colors)
+    surf.autoscale()
+    surf.set_clim(cmin, cmax)
+    
+    cbar = fig.colorbar(surf, shrink=0.5, aspect=10, ticks=[cmin,  cmax])
+    cbar.ax.set_yticklabels(["{:1.2f}".format(i) for i in [cmin, cmax]])
+    cbar.ax.get_yaxis().labelpad = 15 
+    cbar.ax.tick_params(labelsize = 60)    
+    
+    ax.grid(False)
+    # Hide axes ticks
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_zticks([])
+    ax.set_axis_off()
+    
+    l, b, w, h = ax.get_position().bounds
+    ll, bb, ww, hh = cbar.ax.get_position().bounds
+    ax.set_position([l-0.05, b, w, h])
+    cbar.ax.set_position([ll-0.1, b + 0.1*h, ww, h*0.8])
+
+    return fig
+
 
 def plot_surf(xS, yS, zS, triS, data, cmap, cmin, cmax):
-    import numpy as np
-    from mpl_toolkits.mplot3d import Axes3D
-    import matplotlib.pyplot as plt
-    import matplotlib.tri as mtri
-    import seaborn as sns
     sns.set_context("poster", font_scale=1.4)
     sns.set_style('white')
     
@@ -70,7 +116,8 @@ def plot_surf(xS, yS, zS, triS, data, cmap, cmin, cmax):
 
     c = data
 
-    colors = np.mean( [c[triangles[:,0]], c[triangles[:,1]], c[triangles[:,2]]], axis = 0);
+    colors = np.mean( [c[triangles[:,0]], c[triangles[:,1]], 
+                       c[triangles[:,2]]], axis = 0);
 
     # Displays the 4D graphic.
     fig = plt.figure(figsize=(12,12));
@@ -80,8 +127,6 @@ def plot_surf(xS, yS, zS, triS, data, cmap, cmin, cmax):
     surf = ax.plot_trisurf(x,y,z,
                            triangles = triangles, 
                            cmap = cmap,
-                           #cmap = 'Greys_r',
-                           #cmap = parula_map,
                            edgecolor = None,
                            linewidth = 0, 
                            antialiased = False)
@@ -105,65 +150,96 @@ def plot_surf(xS, yS, zS, triS, data, cmap, cmin, cmax):
 
 
 
-
-def plot_surf_upper2(xS, yS, zS, triS, data, cmap, cmin, cmax):
-    import numpy as np
-    from mpl_toolkits.mplot3d import Axes3D
-    import matplotlib.pyplot as plt
-    import matplotlib.tri as mtri
-    import seaborn as sns
-
-    g = sns.set_style('white')
+# spider plots for the fc measures
+def make_spider_fcon(df, var1, var2, ):    
     
-    x = xS          
-    y = yS
-    z = zS       
+    categories=list(df[list(df)[0]])
+    N = len(categories)
 
-    triangles = triS - 1 # matlab-python index matching 
+    # divide the plot / number of variable)
+    angles = [n / float(N) * 2 * pi for n in range(N)]
+    angles += angles[:1]
 
-    c = data
+    # Initialise the spider plot
+    fig = plt.figure(figsize=(10,10))
+    ax  = plt.subplot(111, polar=True, )
 
-    colors = np.mean( [c[triangles[:,0]], c[triangles[:,1]], c[triangles[:,2]]], axis = 0);
+    # If you want the first axis to be on right:
+    ax.set_theta_offset(pi / 2)
+    ax.set_theta_zero_location("E")
 
-    # Displays the 4D graphic.
-    fig = plt.figure(figsize=(12,12));
-    ax  = fig.add_subplot(1, 1, 1, projection='3d')
-    ax.view_init(azim=240)
+    # Draw one axe per variable + add labels labels yet
+    plt.xticks(angles[:-1], categories, color='black', size=0)
 
-    surf = ax.plot_trisurf(x,y,z,
-                           triangles = triangles, 
-                           cmap = cmap,
-                           #cmap = 'Greys_r',
-                           #cmap = parula_map,
-                           edgecolor = None,
-                           linewidth = 0, 
-                           antialiased = False)
+    # Draw ylabels
+    ax.set_rlabel_position(0)
+    plt.yticks([])
+    plt.ylim(0, 0.9)
 
-    surf.set_array(colors)
-    surf.autoscale()
-    surf.set_clim(cmin, cmax)
+    # Ind1
+    values   = df['var1'].values.flatten().tolist()
+    values  += values[:1]
+    values2  = df['var2'].values.flatten().tolist()
+    values2 += values2[:1]
     
-    cbar = fig.colorbar(surf, shrink=0.5, aspect=10, ticks=[cmin,  cmax])
-    cbar.ax.set_yticklabels(["{:1.2f}".format(i) for i in [cmin, cmax]])
-
-    cbar.ax.get_yaxis().labelpad = 15 
-    cbar.ax.tick_params(labelsize = 60)    
+    for degree in [(360/7.0)*0, (360/7.0)*1, (360/7.0)*2, (360/7.0)*3,
+                  (360/7.0)*4, (360/7.0)*5, (360/7.0)*6]:
+        rad = np.deg2rad(degree)
+        ax.plot([rad,rad], [0,1], color="white", linewidth=2)
     
-    ax.grid(False)
-
-    # Hide axes ticks
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.set_zticks([])
-    ax.set_axis_off()
     
-    l, b, w, h = ax.get_position().bounds
-    ll, bb, ww, hh = cbar.ax.get_position().bounds
-    ax.set_position([l-0.05, b, w, h])
-    cbar.ax.set_position([ll-0.1, b + 0.1*h, ww, h*0.8])
+    ax.plot(angles, values, color='gold', linewidth=10, linestyle='solid')
+    ax.plot(angles, values2, color='royalblue', linewidth=10, linestyle='solid')
 
+    A = np.array([n / float(500) * 2 * pi for n in range(500)])
+    B = np.zeros(len(A)) 
+    C = np.zeros(len(A)) + 0.3
+    D = np.zeros(len(A)) + 0.6
+    E = np.zeros(len(A)) + 0.9
+  
+    def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
+        new_cmap = colors.LinearSegmentedColormap.from_list(
+            'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, 
+             b=maxval), cmap(np.linspace(minval, maxval, n)))
+        return new_cmap
+
+    length = int(85)
+    colors1 = plt.get_cmap('gray')(np.linspace(0.6, 0.62, length))
+    colors2 = plt.get_cmap('gray')(np.linspace(0.7, 0.72, length))
+    colors3 = plt.get_cmap('gray')(np.linspace(0.8, 0.82, length))
+    colors4 = plt.get_cmap('gray')(np.linspace(0.9, 0.92, length))
+
+    num = 256
+    gradient = range(num)
+    for x in range(5):
+        gradient = np.vstack((gradient, gradient))
     
+    ax.fill(A, E, color=colors4[0,:], alpha=1)
+    ax.fill(A, D, color=colors3[0,:], alpha=1)
+    ax.fill(A, C, color=colors2[0,:], alpha=1)
+    ax.fill(A, B, color=colors1[0,:], alpha=1)    
+ 
+    gridlines = ax.yaxis.get_gridlines()
+    for j in range(0, len(gridlines)):
+        gridlines[j].set_color("white")
+        gridlines[j].set_linewidth(0)
+
+    gridlines = ax.xaxis.get_gridlines()
+    for j in range(0, len(gridlines)):
+        gridlines[j].set_color("white")
+        gridlines[j].set_linewidth(1)
+        
+    ax.spines['polar'].set_visible(False)
+
     return fig
+
+
+
+
+
+
+
+
 
 
 def plot_surf_upper3(xS, yS, zS, triS, data, cmap, cmin, cmax):
@@ -308,8 +384,6 @@ def margu_map():
 
 
     
-import matplotlib.colors as colors
-import matplotlib.pyplot as plt
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     new_cmap = colors.LinearSegmentedColormap.from_list(
@@ -535,6 +609,77 @@ def make_spider_t_hvalues(df, var1, var2, ):
     ax.spines['polar'].set_visible(False)
     
     return fig
+
+
+import matplotlib.colors as colors
+
+def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
+    new_cmap = colors.LinearSegmentedColormap.from_list(
+        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
+        cmap(np.linspace(minval, maxval, n)))
+    return new_cmap
+
+cmap = plt.get_cmap('nipy_spectral')
+
+#colors1 = plt.cm.YlGnBu(np.linspace(0, 1, 128))
+first = 70
+second = 58
+third  = 64
+fourth = 64
+
+colors1 = plt.cm.coolwarm(np.linspace(0.5, 1, first))
+
+cols = np.vstack((colors1))
+pnasEDITEDX = colors.LinearSegmentedColormap.from_list('my_colormap', cols)
+
+
+
+def plot_sorted_df(df_zscore, dflist, thr, vmax, figsize=None):
+
+    df = []
+    df = df_zscore.copy()
+    df[df<thr] = 0 
+
+    mask = np.triu(np.ones_like(df_zscore, dtype=np.bool))
+    mask = mask[1:, :-1]
+    corr = df_zscore.iloc[1:,:-1].copy()               
+                   
+    sns.set(context="paper", 
+            font="sans-serif", 
+            font_scale=3.8)
+    
+    if figsize == None:
+        f, (ax1) = plt.subplots(nrows=1,ncols=1,figsize=(15, 10), sharey=True)
+    else: 
+        f, (ax1) = plt.subplots(nrows=1,ncols=1,figsize=figsize, sharey=True)
+        
+    
+    cax = sns.heatmap(corr, 
+                      linewidths=1, 
+                      square=True, 
+                      cmap=pnasEDITEDX, 
+                      robust=False, 
+                      ax=ax1, 
+                      vmin = thr, 
+                      vmax = vmax, 
+                      mask=mask,
+                      annot=True, fmt=".2f", annot_kws={"size": 19},
+                      )
+
+    percentiles = range(11)
+    cax.set_xticks(np.arange(0.5, len(percentiles), 1))
+    cax.set_xticklabels(dflist, 
+                          rotation=90)
+    cbar = cax.collections[0].colorbar
+    cbar.set_label('r', labelpad=-30, rotation=270)
+    cbar.set_ticks(ticks=[thr,vmax])
+    cbar.set_ticklabels(ticklabels=[('%1.1f' % thr), ('%1.1f' % vmax)])
+    cbar.outline.set_edgecolor('black')
+    cbar.outline.set_linewidth(0.5)
+
+    plt.draw()
+    f.tight_layout()
+    return f
 
 
 
