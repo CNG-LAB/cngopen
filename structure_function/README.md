@@ -28,7 +28,7 @@ Check out structure and function using the following steps. <br />
 
 1. First we correlated the rows of the structural and functional matrices.
 
-2. We did the same for the mean functional/structural matrix with their heritability maps and for macaques.
+2. We did the same for the mean functional/structural matrix with their heritability maps - as well as heritability of structure-function coupling, and for macaques.
 
 3. To compare humans and macaque data on the surface, we used Ting Xu's code and approach: https://github.com/CNG-LAB/PRIME-DE
 
@@ -40,8 +40,8 @@ functional terms (NeuroSynth).
 
 ### Manuscript data
 
-- Main data is from HCP and PRIME-DE which is openly available.
-- Auxiliary data is in a .mat file. Do let me know if you feel something is missing.
+- Main data is from HCP and PRIME-DE which is openly available. 
+- Auxiliary data is in a .mat file. Do let me know if you think something is missing.
 
 ---
 
