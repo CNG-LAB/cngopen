@@ -62,9 +62,4 @@ hr_mpc(eye(400)==1)=0; % zeros in the diagonal
 % use the pedigree structure of HCP in combination with solar-eclipse
 % scripts: https://www.nitrc.org/projects/se_linux  
         
-% to save: dual origin map
-% to save: mesulam map
-% to save: yeo 7 networks map
-% to save: macaque cyto map + yeo_map
-% to save: rescale function
         

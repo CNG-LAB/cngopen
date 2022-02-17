@@ -1,180 +1,176 @@
-% bringing it all together
+% Fig 4. Structure-function coupling in different macaque samples. 
+% A) Anesthetized macaque (sample: Davis) structure-function coupling 
+% and correlation with human structure-function coupling projected to 
+% macaque space; B) Awake macaque (sample Newcastle) structure-function 
+% coupling and correlation with human structure-function coupling projected 
+% to macaque space; C) Anesthetized macaque (sample Oxford) structure-
+% function coupling and correlation with human structure-function coupling 
+% projected to macaque space; D) Structure-function coupling averaged in 
+% cytoarchitectural classes 6 across 182 parcels of the Markov parcellation 
+% for HCP, Davis, Newcastle and Oxford samples, boxes show the median and 
+% interquartile (25-75%) range, whiskers depict the 1.5*IQR from the quartile. 
+% Source data are provided as a Source Data file.
 
-% two-D projection:
 
-% yeo
-yeo_test = [120 18 134; 70 130 180; 0 118 14; 196 58 250; 220 248 164;...
-            230 148 34; 205 62 78];
-f =figure,
-scatter(c1-f1,fc_mpc,100,yeo_post_hoc,'filled','MarkerEdgeColor',[0 .5 .5]),
-colormap(yeo_test./256)
+% for preprocessing please have a look here: https://github.com/CNG-LAB/PRIME-DE
+
+% for structure-function associations in macaques we used the same approach
+% as for humans: 
+
+% correlate both metrics for Davis / Newcastle and Oxford samples
+for i = 1:182
+    [r p] = corr(fc_mac(i,:)',fc_mac(i,:)','type','spearman')
+    fc_mpc_mac(i) = r;
+end
+
+mac_map = macaque_template;
+for i = 1:91
+    mac_map(:,find(markovparcellation==i+1)) = fc_mpc_mac(i);
+end
+for i = 1:91
+    mac_map(:,find(markovparcellation==i+1001)) = fc_mpc_mac(i+91);
+end
+
+f = figure,
+BoSurfStatViewData(mac_map,surf.macaque,'')
+colormap(flipud(cbrewer('div','RdBu',99)))
+
+% scatter
+ f=figure,
+    scatter(davis_mcc_fc_mpc,fc_mpc_human2macaque_m,100, mesu_mac,'filled'),lsline
+    colormap((mes_color))
    
-% mesulam
-mes_color = (cbrewer('div','Spectral',5));
-mes_color =[[0 0 0] ;mes_color([1:2,4:5],:)];
-
-f =figure,
-scatter(c1-f1,fc_mpc,100,mesulam400,'filled'),
-colormap(mes_color)
-exportfigbo(f,[RPATH 'F4.scatter.mesulam.png'],'png', 10)
-
-% macaque yeo
-f =figure,
-scatter(mc_diff,fc_mpc_mac,100,yeo_mcc2,'filled','MarkerEdgeColor',[0 .5 .5]),
-colormap(yeo_test./256)
-
-% macaque mesulam
-f =figure,
-scatter(mc_diff,fc_mpc_mac,100,mesul_m,'filled','MarkerEdgeColor',[0 .5 .5]),
-colormap(mes_color)
-
-% dual origin
-
-f=figure, scatter(c1-f1,fc_mpc,100,dual400,'filled','MarkerEdgeColor',[0 .5 .5]), colormap( [flipud(cm3);cm2]),
-exportfigbo(f,[RPATH 'F4.scatter.dual.png'],'png', 10)
-
-% cortical expansion
-f=figure, scatter(c1-f1,fc_mpc,100,HMS400,'filled','MarkerEdgeColor',[0 .5 .5]), colormap( jet),
-exportfigbo(f,[RPATH 'F4.scatter.hms.png'],'png', 10)
-
-% functional decoding
-for functional_decoding = 1
-    measure=fc_mpc;
-    for j = 1:24
-        
-        L = gifti(['neurosynth_z_values/', files_lh(j).name]);
-        R = gifti(['neurosynth_z_values/', files_rh(j).name]);
-        funcmap= [L.cdata;R.cdata];
-        
-        bins1   = [];
-        bins1   = quantileranks(measure,20);
-        
-        heri_ct = zeros(1,64984);
-        for i = 1:400
-            heri_ct(:,find(HCP400_7.cdata==i)) = bins1(i);
+% spin tests - based on brainspace.readthedocs.de
+macaque_sample = newc_mcc_fc_mpc;
+    for spin_test = 1
+        mc_tdiff = zeros(1,length(maskmaskvo.x1));
+        for i = 1:91
+            mc_tdiff(:,find(mask_markov==i)) = macaque_sample(i);
         end
-        
-        
-        for i = 1:20
-            tmp(j,i) = mean(funcmap(find(heri_ct==i)));
+        for i = 1:91
+            mc_tdiff(:,find(mask_markov==i+1000)) = macaque_sample(i+91);
         end
+      
+        n_permutations = 1000;
+        y_rand = spin_permutations({[mc_tdiff(1:32492)'],[mc_tdiff(32493:end)']}, ...
+            {LHmSP, RHmSP}, ...
+            n_permutations);
         
-    end
-    
-    for i = 1:20
-        fc_mpc_binned(i) = mean(fc_mpc(bins1==i))
-    end
-    
-    tmpz2= zscore(tmp,[],2)
-    tmpz22 = tmpz2;
-    tmpz2(tmpz2<0.5) = nan;
-    weighted_mean = nanmean(tmpz2.*(fc_mpc_binned),2);
-    [~,b,c] = unique(weighted_mean)
-    
-    f=figure,
-    imagesc(tmpz22(b,:),[-4 4])
-    colormap(vik)
-    colorbar
-    exportfigbo(f,[RPATH 'F4.coupling.png'],'png', 10)
-    
-    
-    decode_map=c1-f1;
-    for j = 1:24
+        % Merge the rotated data into single vectors
+        mc_rotated = squeeze([y_rand{1}(:,1,:);y_rand{2}(:,1,:)]);
         
-        L = gifti(['/neurosynth_z_values/', files_lh(j).name]);
-        R = gifti(['/neurosynth_z_values/', files_rh(j).name]);
-        funcmap= [L.cdata;R.cdata];
+        [r_original_thick, pval_thick_spin] = corr(fc_mpc_human2macaque_m',macaque_sample, ...
+            'rows','pairwise','type','spearman')
         
-        bins1   = [];
-        bins1   = quantileranks(decode_map,20);
-        
-        heri_ct = zeros(1,64984);
-        for i = 1:400
-            heri_ct(:,find(HCP400_7.cdata==i)) = bins1(i);
+        for i = 1:91
+            mc_rotated_p(i,:) = mean(mc_rotated(find(mask_markov==i),:));
         end
+        for i = 1:91
+            mc_rotated_p(i+91,:) = mean(mc_rotated(find(mask_markov==i+1000),:));
+        end      
+        
+        r_rand_thick = corr(mc_rotated_p,fc_mpc_human2macaque_m', ...
+            'rows','pairwise','type','spearman');
+        
+        % Compute percentile rank.
+        prctile_rank_thick = mean(r_original_thick > r_rand_thick)
+        
+    end
+  
+    
+% spintest
+% Raincloud projection
+for macaque_rain = 1
+    for yeo_1 = 1
+        
+        to_brain_m = fc_mpc_mac;
+        change_p = [];
+        change_p.v = to_brain_m(find(yeo_mcc2==1));
+        change_p.sn = to_brain_m(find(yeo_mcc2==2));
+        change_p.da = to_brain_m(find(yeo_mcc2==3));
+        change_p.va = to_brain_m(find(yeo_mcc2==4));
+        change_p.l = to_brain_m(find(yeo_mcc2==5));
+        change_p.fp = to_brain_m(find(yeo_mcc2==6));
+        change_p.dmn = to_brain_m(find(yeo_mcc2==7));
+        
+        cl = [120 18 134; 70 130 180; 0 118 14; 196 58 250; 220 248 164;...
+            230 148 34; 205 62 78]./256;
+      
+        fig_position = [200 200 600 400]; % coordinates for figures
+        
+        d{1} = change_p.v';
+        d{2} = change_p.sn';
+        d{3} = change_p.da';
+        d{4} = change_p.va';
+        d{5} = change_p.l';
+        d{6} = change_p.fp';
+        d{7} = change_p.dmn';
+        
+        means = cellfun(@mean, d);
+        variances = cellfun(@std, d);
+        
+        f = figure('Position', fig_position);
+        h1 = raincloud_plot(d{1}, 'box_on', 1, 'color', cl(1,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', .15, 'dot_dodge_amount', .15,...
+            'box_col_match', 0);
+        h2 = raincloud_plot(d{2}, 'box_on', 1, 'color', cl(2,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', .35, 'dot_dodge_amount', .35, 'box_col_match', 0);
+        h3 = raincloud_plot(d{3}, 'box_on', 1, 'color', cl(3,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', .55, 'dot_dodge_amount', .55, 'box_col_match', 0);
+        h4 = raincloud_plot(d{4}, 'box_on', 1, 'color', cl(4,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', .75, 'dot_dodge_amount', .75,...
+            'box_col_match', 0);
+        h5 = raincloud_plot(d{5}, 'box_on', 1, 'color', cl(5,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', .95, 'dot_dodge_amount', .95, 'box_col_match', 0);
+        h6 = raincloud_plot(d{6}, 'box_on', 1, 'color', cl(6,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', 1.15, 'dot_dodge_amount', 1.15, 'box_col_match', 0);
+        h7 = raincloud_plot(d{7}, 'box_on', 1, 'color', cl(7,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', 1.35, 'dot_dodge_amount', 1.35,...
+            'box_col_match', 0);
+        
+        set(gca,'XLim', [-1 1], 'YLim', [-3 3]);
+        box off
+        exportfigbo(f,[RPATH 'fc-mpc.yeo.mc.rain.png'],'png', 10)
+    end
+    
+    for mesul_1 = 1
+        to_brain_m = fc_mpc_mac;
+        change_p.pl  = to_brain_m(find(mesul_m==4));
+        change_p.he = to_brain_m(find(mesul_m==3));
+        change_p.un = to_brain_m(find(mesul_m==2));
+        change_p.pr = to_brain_m(find(mesul_m==1));
+        
+        mes_color = (cbrewer('div','Spectral',5));
+        cl = flipud(mes_color([1:2,4:5],:));
         
         
-        for i = 1:20
-            tmp2(j,i) = mean(funcmap(find(heri_ct==i)));
-        end
+        fig_position = [200 200 600 400]; % coordinates for figures
+        
+        d = [];
+        d{1} = change_p.pl';
+        d{2} = change_p.he';
+        d{3} = change_p.um';
+        d{4} = change_p.pr';
+        
+        means = cellfun(@mean, d);
+        variances = cellfun(@std, d);
+        
+        f = figure('Position', fig_position);
+        h1 = raincloud_plot(d{1}, 'box_on', 1, 'color', cl(1,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', .15, 'dot_dodge_amount', .15,...
+            'box_col_match', 0);
+        h2 = raincloud_plot(d{2}, 'box_on', 1, 'color', cl(2,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', .35, 'dot_dodge_amount', .35, 'box_col_match', 0);
+        h3 = raincloud_plot(d{3}, 'box_on', 1, 'color', cl(3,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', .55, 'dot_dodge_amount', .55, 'box_col_match', 0);
+        h4 = raincloud_plot(d{4}, 'box_on', 1, 'color', cl(4,:), 'alpha', 0.5,...
+            'box_dodge', 1, 'box_dodge_amount', .75, 'dot_dodge_amount', .75,...
+            'box_col_match', 0);
+         
+        set(gca,'XLim', [-1 1], 'YLim', [-2.5 3]);
+        box off
+        exportfigbo(f,[RPATH 'fc-mpc.mesul.mc.rain.png'],'png', 10)
     end
-    
-    
-    for i = 1:20
-        grd_binned(i) = mean(decode_map(bins1==i))
-    end
-    
-    tmpz= zscore(tmp2,[],2)
-    tmpzz = tmpz;
-    tmpz(tmpz<0.5) = nan;
-    weighted_mean = nanmean(tmpz.*(grd_binned),2);
-    [~,d,e] = unique(weighted_mean)
-    
-    f=figure,
-    imagesc(tmpzz(d,:),[-4 4])
-    colormap(vik)
-    colorbar
-    exportfigbo(f,[RPATH 'F4.gradient_diff.png'],'png', 10)
-    
-    j=0
-    for i = 1:24
-        j=j+1;
-        words{j} = [files_lh(i).name]
-        worrs3{j} = words{j}(1:end-32);
-        wrd{j} = num2str(j);
-    end
-    
-    eucd= sqrt(c.^2+d.^2)
-    f=figure,
-    x = e; y = e; scatter(x,y,70,'filled');
-    txty = worrs3;
-    colormap(flipud(cbrewer('div','Spectral',24)))
-    dx = -1; dy = 0.7; % displacement so the text does not overlay the data points
-    text(x+dx, y+dy, txty,'FontSize',20);
-    exportfigbo(f,[RPATH 'F4.2d.func.png'],'png', 10)
-    
 end
 
-% genetic decoding
-for genetic_decoding = 1
-    % use abagen to extract gene lists for the Schaefer 400 parcellation
-    % that are consistent across donors
-    [~,tot_gene_list400,~] = xlsread('/tot_gene_list.xlsx');
-    g = load('/tot_gene_consis_lh400.mat');
-    %pcor = fdr_bh(g1.tot_gene_consis_lh(:,2),0.001);
-    %sig_idx = find(pcor<0.05);
-    sig_idx = find(g.tot_gene_consis_lh(:,1)>0.5);
-    sig_gene = tot_gene_list400(sig_idx);
-    %sig_gene = tot_gene_list400(pcor==1);
     
-    %% coupling
-    [~,cp_gene_list,~] = xlsread('coupling.xlsx','coupling');
-    
-    A = cp_gene_list(:,1);
-    B = cp_gene_list(:,2);
-    D = sig_gene;
-    
-    cp_1 = (intersect(B,D));
-    cp_2 = (intersect(A,D));
-    
-    
-    [~,g_gene_list,~] = xlsread('/Users/sofievalk/Dropbox/Heritability_gradients/Transcriptome_decoding/redo_updated_1_unal_2_al.xlsx','aligned');
-    
-    E = g_gene_list(:,1);
-    F = g_gene_list(:,2);
-    D = sig_gene;
-    
-    align_1  = (intersect(E,D));
-    align_2  = (intersect(F,D));
-    
-    %uncoupling
-    char(intersect(setdiff(cp_2,align_2),cp_2))
-    %mpc
-    char(intersect(setdiff(align_2,cp_2),cp_2))
-    
-    %coupling
-    char(intersect(setdiff(cp_1,align_1),cp_1))
-    %rsfc
-    char(intersect(setdiff(align_1,cp_1),align_1))
-    
-end
