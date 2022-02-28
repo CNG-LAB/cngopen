@@ -32,16 +32,16 @@ After running both scripts, you should have retrieved a co-alteration hub map, f
 
 ### Data that was generated for this study:
 
-_Disorder_covariance.mat_ = Cross-disorder inter-parcel correlation of COhen’s d values
-_Normative_Connectivity_Hubs.mat_ = Hubs computed based on HCP young adult sample (rs-fMRI and DTI)
-_Transdiagnostic_Covariance_Hubs.mat_ = Cross-disorder hubs of covariance of CT alterations
-_Epicenters.mat_ = All cortical and sub-cortical functional and structural disease epicenters
-_CT_psych_gradients.mat_ = the transdiagnostic gradients presented in this manuscript
-_Cyto_gradients.mat_ = The 2 trans diagnostic gradients stratified according to Von Economo-Koskinas cytoarchitectonic classes
-_Genes_G1.mat_ = Genes whose cortical expression pattern significantly correlates with G1
+* _Disorder_covariance.mat_ = Cross-disorder inter-parcel correlation of COhen’s d values
+* _Normative_Connectivity_Hubs.mat_ = Hubs computed based on HCP young adult sample (rs-fMRI and DTI)
+* _Transdiagnostic_Covariance_Hubs.mat_ = Cross-disorder hubs of covariance of CT alterations
+* _Epicenters.mat_ = All cortical and sub-cortical functional and structural disease epicenters
+* _CT_psych_gradients.mat_ = the transdiagnostic gradients presented in this manuscript
+* _Cyto_gradients.mat_ = The 2 trans diagnostic gradients stratified according to Von Economo-Koskinas cytoarchitectonic classes
+* _Genes_G1.mat_ = Genes whose cortical expression pattern significantly correlates with G1
 
 ### Data that is required to run the analyses
-_Cohen’s_d_CT_6_disorders.mat_ = ENIGMA case-control difference Cohen’s d maps for cortical thickness.
-_Valk2020_CT_structural_covariance_gradient.mat_ = normative Gradient of cortical thickness covariance, published by Sofie Valk in Science Advances 2020
-_neurosynth_z_values_ = Functional topic terms and their fMRI correlates (maps)
-_DK_midbrain_parcels.mat_ / midbrain_vertices_fsa5.mat = vertices which you can set to 0 during visualization to mask the midbrain
+* _Cohen’s_d_CT_6_disorders.mat_ = ENIGMA case-control difference Cohen’s d maps for cortical thickness.
+* _Valk2020_CT_structural_covariance_gradient.mat_ = normative Gradient of cortical thickness covariance, published by Sofie Valk in Science Advances 2020
+* _neurosynth_z_values_ = Functional topic terms and their fMRI correlates (maps)
+* _DK_midbrain_parcels.mat_ / midbrain_vertices_fsa5.mat = vertices which you can set to 0 during visualization to mask the midbrain
