@@ -1,14 +1,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Coordinated Cortical Thickness alterations Across Mental Disorders: A
-%Transdiagnostic ENIGMA Study
-% Script 1: Loads ENIGMA summary statistics (Cohen's d maps), computes
-% cross-disorder covariance hubs and epicenters
+% Coordinated Cortical Thickness alterations Across Mental Disorders: A Transdiagnostic ENIGMA Study
+% This script runs analyses presented in Figure 1 of the manuscript.
+% It loads ENIGMA summary statistics (Cohen's d maps) and HCP connectivity data, computes
+% cross-disorder co-alteration hubs as well as functional and structural
+% disease epicenters. You can exchange selected disorders or use your own effect size maps (in DK or fsa5 space). 
+% This script uses the same colormap for all analyses, while we
+% changed colormaps for the manuscript figures for visualization purposes.
 
-%This script runs analyses presented in Figure 1 of the manuscript.
 %Meike Hettwer 2021 - CNG Lab
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% add Toolboxes 
+%% add Toolboxes and data paths
 
 %ENIGMA-1.1.3
 %BrainSpace-0.1.2
@@ -17,18 +19,21 @@
 %BCT
 %GRETNA-2.0.0_release
 
-%% load data from GitHub
+% set your paths
+%DataPath = '.../data/';
+%ScriptPath = '.../Scripts_Fun/';
 
-%% load data
-load('CT_6_disorders.mat'); % ENIGMA Cohen's d values for case-control differences in cortical thickness
-load('corr_dis.mat'); %transdiagnostic covariance matrix
+%% load data from GitHub data folder
+load(strcat(DataPath,'CT_6_disorders.mat'));
+load(strcat(DataPath,'corr_dis.mat'));
+load(strcat(DataPath,'CT_psych_gradients.mat'));
+%load useful info for conversion between atlases (note: extra midbrain
+%parcels when mapping from fsa5 to Desikan-Killiany are: 1 5 40)
+load(strcat(DataPath,'midbrain_vertices_fsa5.mat'));
+load(strcat(DataPath,'DK_midbrain_parcels.mat'));
 
-%load info which parcels/vertices are midbrain vertices to exclude during visualization/spin tests 
-%(note: extra midbrain parcels when mapping from fsa5 to Desikan-Killiany are: 1 5 40)
-load('midbrain_vertices_fsa5.mat');
-load('DK_midbrain_parcels.mat');
-
-%If data is loaded individually from the ENIGMA Toolbox
+% If data is loaded individually from the ENIGMA Toolbox:
+% Here you can change/select disorders for your own analyses
 %{
 %Schizophrenia
 sum_stats = load_summary_stats('schizophrenia')
@@ -88,15 +93,15 @@ figure; imagesc(sc_ctx, [0 10]); %plot structural connectivity matrix
 axis square; colormap(purple);colorbar; set(gca, 'YTick', [], 'XTick', [])
  
 %% Hubs (*Figure 1C*)
-% Compute normative connectivity degree centrality (hubs) for top 20%
-% connections, by taking the sum of strong connections per parcel
+% Compute normative connectivity degree centrality (hubs) for top 20% of
+% connections, by taking the sum (i.e. number) of strong connections per parcel
 fc_ctx_bin_thresh = bsxfun(@gt, fc_ctx, prctile(fc_ctx,80))'; 
 sc_ctx_bin_thresh = bsxfun(@gt, sc_ctx, prctile(sc_ctx,80))';  
-fc_ctx_dc_thresh = sum(fc_ctx_bin_thresh);
-sc_ctx_dc_thresh = sum(sc_ctx_bin_thresh);
+fc_ctx_dc = sum(fc_ctx_bin_thresh);
+sc_ctx_dc = sum(sc_ctx_bin_thresh);
 
-plot_cortical(parcel_to_surface(fc_ctx_dc_thresh))
 % Set up thresholded disorder correlation matrix and dc map
+corr_dis = corr(disorders');
 corr_dis_bin_thresh = bsxfun(@gt, corr_dis, prctile(corr_dis,80))'; 
 figure; imagesc(corr_dis_bin_thresh);set(gca,'XTick',[],'YTick',[]);colormap(cbrewer('seq','Reds',50));colorbar; axis square;
 
@@ -105,27 +110,27 @@ dis_dc = sum(corr_dis_bin_thresh);
 figure; plot_cortical(parcel_to_surface(dis_dc, 'aparc_fsa5'),'color_range',[0 40])
 
 % Compute correlation between normative connectome hubs and transdiagnostic covariance hubs
-% functional hubs
-[r1,p1] = corr(dis_dc',fc_ctx_dc_thresh');
-[p1_spin, r1_dist] = spin_test(dis_dc',fc_ctx_dc_thresh', 'surface_name', 'fsa5', 'parcellation_name', ...
+% functional hubs and assess significance via spin test
+[r1,p1] = corr(dis_dc',fc_ctx_dc');
+[p1_spin, r1_dist] = spin_test(dis_dc',fc_ctx_dc', 'surface_name', 'fsa5', 'parcellation_name', ...
                                     'aparc', 'n_rot', 1000, 'type', 'pearson');
 % structural hubs
-[r2,p2] = corr(dis_dc',sc_ctx_dc_thresh');
-[p2_spin, r2_dist] = spin_test(dis_dc',sc_ctx_dc_thresh', 'surface_name', 'fsa5', 'parcellation_name', ...
+[r2,p2] = corr(dis_dc',sc_ctx_dc');
+[p2_spin, r2_dist] = spin_test(dis_dc',sc_ctx_dc', 'surface_name', 'fsa5', 'parcellation_name', ...
                                     'aparc', 'n_rot', 1000, 'type', 'pearson');
                                
 %% Epicenters (*Figure 1D*)
-% Identify cortical epicenter values (from functional connectivity) by
+% Identify functional cortical epicenter values by
 % systematically correlating seed-based connectivity profiles with
 % covariance hub map
-fc_ctx_trans              = zeros(size(fc_ctx, 1), 1);
+fc_ctx_trans               = zeros(size(fc_ctx, 1), 1);
 fc_ctx_trans_p            = zeros(size(fc_ctx, 1), 1);
 for seed = 1:size(fc_ctx, 1)
     seed_conn           = fc_ctx(:, seed);
-    r_tmp               = corrcoef(seed_conn, dis_dc);
+    r_tmp                 = corrcoef(seed_conn, dis_dc);
     fc_ctx_trans(seed)    = r_tmp(1, 2);
     fc_ctx_trans_p(seed)  = spin_test(seed_conn, dis_dc, 'surface_name', 'fsa5', 'parcellation_name', ...
-                                    'aparc', 'n_rot', 1000, 'type', 'pearson');
+        'aparc', 'n_rot', 1000, 'type', 'pearson');
 end
 
 % Identify cortical epicenter values (from structural connectivity)
@@ -143,13 +148,14 @@ end
 fc_ctx_trans_p_sig = zeros(length(fc_ctx_trans_p), 1);
 fc_ctx_trans_p_sig(fc_ctx_trans_p < 0.05) = fc_ctx_trans(fc_ctx_trans_p<0.05);
 figure; plot_cortical(parcel_to_surface(fc_ctx_trans_p_sig, 'aparc_fsa5'), ...
-                'color_range', [0 0.5]');%Red_colorbar
+                'color_range', [0 0.5]');
 
 % Selecting only regions with p < 0.05 (structural epicenters)
 sc_ctx_trans_p_sig = zeros(length(sc_ctx_trans_p), 1);
 sc_ctx_trans_p_sig(sc_ctx_trans_p < 0.05) = sc_ctx_trans(sc_ctx_trans_p<0.05);
 figure; plot_cortical(parcel_to_surface(sc_ctx_trans_p_sig, 'aparc_fsa5'), ...
-                'color_range', [0 0.5], 'cmap', 'RdBu_r')%cbrewer('seq','BuPu',100)
+                'color_range', [0 0.5], 'cmap', 'RdBu_r');
+
 
 %% Compute subcortical epicenters in the same manner
 % Load subcortico-cortical functional connectivity data
@@ -196,4 +202,3 @@ figure; plot_subcortical(sc_sctx_epi_p_sig, 'ventricles', 'False', ...
 
                
 %% END OF ANALYSES VISUALIZED IN FIGURE 1                
-               
