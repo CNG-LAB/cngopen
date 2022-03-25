@@ -43,7 +43,7 @@ colormap(flipud(cbrewer('div','RdBu',99)))
 % spin tests - based on brainspace.readthedocs.de
 macaque_sample = newc_mcc_fc_mpc;
     for spin_test = 1
-        mc_tdiff = zeros(1,length(maskmaskvo.x1));
+        mc_tdiff = nan(1,length(maskmaskvo.x1));
         for i = 1:91
             mc_tdiff(:,find(mask_markov==i)) = macaque_sample(i);
         end
