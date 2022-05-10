@@ -32,14 +32,16 @@ group_gradients_LSUB = group_gradients[0:1024,:]
 np.random.seed(0)
 galign = GradientMaps(kernel = 'normalized_angle', 
                       approach = 'dm', 
-                      alignment = 'procrustes')
+                      alignment = 'procrustes',
+                      )
 
 galign.fit(fc_herit_left_LSUB, reference = group_gradients_LSUB)
 
-G1_LSUB = galign.gradients_[:,0]  
-G2_LSUB = galign.gradients_[:,1]  
-G3_LSUB = galign.gradients_[:,2]  
+G1_LSUB = galign.aligned_[:,0]  
+G2_LSUB = galign.aligned_[:,1]  
+G3_LSUB = galign.aligned_[:,2]  
 
+lambdas_LSUB = galign.lambdas_
 
 # CA-cortex mean fc-heritability gradient
 fc_herit_left_LCA    = fc_herit_left[1024:1024+2048, :]
@@ -49,10 +51,11 @@ galign = GradientMaps(kernel = 'normalized_angle',
                       approach = 'dm', 
                       alignment = 'procrustes')
 galign.fit(fc_herit_left_LCA, reference = group_gradients_LCA)
-G1_LCA = -1*galign.gradients_[:,0]  
-G2_LCA = -1*galign.gradients_[:,1]  
-G3_LCA = galign.gradients_[:,2]  
+G1_LCA = galign.aligned_[:,0]  
+G2_LCA = galign.aligned_[:,1]  
+G3_LCA = galign.aligned_[:,2]  
 
+lambdas_LCA = galign.lambdas_
 
 # DG-cortex mean fc-heritability gradient
 fc_herit_left_LDG    = fc_herit_left[1024+2048:1024+2048+1024, :]
@@ -63,10 +66,11 @@ galign = GradientMaps(kernel = 'normalized_angle',
                       alignment = 'procrustes')
 
 galign.fit(fc_herit_left_LDG, reference = group_gradients_LDG)
-G1_LDG = -1*galign.gradients_[:,0]  
-G2_LDG = -1*galign.gradients_[:,1]  
-G3_LDG = galign.gradients_[:,2]  
+G1_LDG = galign.aligned_[:,0]  
+G2_LDG = galign.aligned_[:,1]  
+G3_LDG = galign.aligned_[:,2]  
 
+lambdas_LDG = galign.lambdas_
 
 # concatenate and save
 G1 = np.concatenate((G1_LSUB, G1_LCA, G1_LDG), axis=0)
@@ -75,8 +79,14 @@ G3 = np.concatenate((G3_LSUB, G3_LCA, G3_LDG), axis=0)
 
 data = np.concatenate((G1.reshape(-1,1), G2.reshape(-1,1), 
                        G3.reshape(-1,1)), axis=1)
-print(data.shape)
+print(data.shape) # (4096, 3)
+
+lambdas = np.concatenate((lambdas_LSUB.reshape(-1,1), 
+                          lambdas_LCA.reshape(-1,1),
+                          lambdas_LDG.reshape(-1,1)), axis=1)
+print(lambdas.shape) # (10, 3)
 
 h = h5py.File('../data/tout_group/Hmean709_FC_herit_gradients_left.h5', 'w')
 h.create_dataset('gradients', data = data)
+h.create_dataset('lambdas', data = lambdas)
 h.close()
