@@ -11,8 +11,6 @@
 
 `hippocampus/scripts/plot_funcs.py` ->  in-house plotting for subfield surfaces and spider plots
 
-`hippocampus/scripts/vis`           ->  in-house plotting for fsaverage5 cortex 
-
 `hippocampus/solar`                 ->  heritability and genetic correlation results from [SOLAR](http://www.solar-eclipse-genetics.org/)
 
 `hippocampus/data`                  ->  group-level data used to report results
@@ -20,7 +18,7 @@
 ### Dependencies
 ----------
 
-`Python 3.6.10` 
+`Python 3.7` 
 
 [BrainSpace](https://github.com/MICA-MNI/BrainSpace)
 
