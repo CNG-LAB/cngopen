@@ -13,22 +13,18 @@ from numpy import inf
 from nilearn.connectome import ConnectivityMeasure
 from brainspace.gradient import GradientMaps
 
-codedir = os.path.dirname(os.path.abspath(__file__))
+outdir = '../data/data_results/supplementary/ukb'
 
-fcdir = os.path.join(os.path.dirname(codedir), 
-                     'data/data_UKB_glasser_fc')
-
-outdir = os.path.join(os.path.dirname(codedir), 
-                     'data/data_results/supplementary/ukb')
+fcdir = '../data/data_results/supplementary/ukb/data_UKB_glasser_fc'
 
 # read-in UK-Biobank resting-state fMRI time series for each subject (n=35143),
 # and compute the functional connectivity for all 4 fashions:
 # LL, RR, LR, RL
-path = os.path.join(os.path.dirname(codedir), 
-                    'data/BPFiltered')
-path_list = os.listdir(path)
+#path = os.path.join(os.path.dirname(codedir), 
+                    #'data/BPFiltered')
+path_list = os.listdir(fcdir+'/')
 path_list.sort()
-
+'''
 correlation_measure = ConnectivityMeasure(kind='correlation')
 for i in range(len(path_list)):
   ts = np.array(pd.read_csv(path+path_list[i],header=None))[16:].T # first 16 ROIs are subcortical
@@ -50,61 +46,59 @@ for i in range(len(path_list)):
     np.savetxt(outdir + '/FC/RL/'+'%.10s' % path_list[i]+'.csv', fc_RL, delimiter = ',')
     np.savetxt(outdir + '/FC/inter/'+'%.10s' % path_list[i]+'.csv', fc_LRRL, delimiter = ',')
     print('finish......'+'%.10s' % path_list[i], i)
+'''
+for i in range(len(path_list)):
+  fc = np.array(pd.read_csv(fcdir+'/'+path_list[i], header=None))
+  if fc.shape[0] == 360 and len(fc[fc==0]) < 540 and fc[0].all() == fc[:,0].all():
+    fc_LL = fc[:180,:180]
+    fc_RR = fc[180:,180:]
+    fc_LR = fc[:180,180:]
+    fc_RL = fc[180:,:180]
+    np.savetxt(outdir + '/FC/LL/'+'%.10s' % path_list[i]+'.csv', fc_LL, delimiter = ',')
+    np.savetxt(outdir + '/FC/RR/'+'%.10s' % path_list[i]+'.csv', fc_RR, delimiter = ',')
+    np.savetxt(outdir + '/FC/LR/'+'%.10s' % path_list[i]+'.csv', fc_LR, delimiter = ',')
+    np.savetxt(outdir + '/FC/RL/'+'%.10s' % path_list[i]+'.csv', fc_RL, delimiter = ',')
+    print(path_list[i],'...',i)
 
 ## mean FC matrix
+path_list = os.listdir(outdir + '/FC/LL/')
+path_list.sort()
 n = len(path_list)
-matrix_fc_LL = [None] * len(path_list)
-matrix_fc_RR = [None] * len(path_list)
-matrix_fc_RL = [None] * len(path_list)
-matrix_fc_LR = [None] * len(path_list)
-matrix_fc_LLRR = [None] * len(path_list)
-matrix_fc_LRRL = [None] * len(path_list)
+
 total_fc_LL = 0
 total_fc_RR = 0
 total_fc_RL = 0
 total_fc_LR = 0
-total_fc_LLRR = 0
-total_fc_LRRL = 0
-
-path_list = os.listdir(os.path.join(outdir, 'FC/LL/'))
-
 
 for i in range(n):
-  matrix_fc_LL[i] = np.array(pd.read_csv(os.path.join(outdir, 'FC/LL/', 
+  matrix_fc_LL = np.array(pd.read_csv(os.path.join(outdir, 'FC/LL/', 
                                           path_list[i]),header=None))
-  total_fc_LL += matrix_fc_LL[i]
-  matrix_fc_RR[i] = np.array(pd.read_csv(os.path.join(outdir, 'FC/RR/', 
+  total_fc_LL += matrix_fc_LL
+  matrix_fc_RR = np.array(pd.read_csv(os.path.join(outdir, 'FC/RR/', 
                                           path_list[i]),header=None))
-  total_fc_RR += matrix_fc_RR[i]
-  matrix_fc_LR[i] = np.array(pd.read_csv(os.path.join(outdir, 'FC/LR/', 
+  total_fc_RR += matrix_fc_RR
+  matrix_fc_LR = np.array(pd.read_csv(os.path.join(outdir, 'FC/LR/', 
                                           path_list[i]),header=None))
-  total_fc_LR += matrix_fc_LR[i]
-  matrix_fc_RL[i] = np.array(pd.read_csv(os.path.join(outdir, 'FC/RL/', 
+  total_fc_LR += matrix_fc_LR
+  matrix_fc_RL= np.array(pd.read_csv(os.path.join(outdir, 'FC/RL/', 
                                           path_list[i]),header=None))
-  total_fc_RL += matrix_fc_RL[i]
-  matrix_fc_LLRR[i] = np.array(pd.read_csv(os.path.join(outdir, 'FC/intra/', 
-                                            path_list[i]),header=None))
-  total_fc_LLRR += matrix_fc_LLRR[i]
-  matrix_fc_LRRL[i] = np.array(pd.read_csv(os.path.join(outdir, 'FC/inter/', 
-                                            path_list[i]),header=None))
-  total_fc_LRRL += matrix_fc_LRRL[i]
+  total_fc_RL += matrix_fc_RL
+  print(path_list[i], '...', i)
 
 mean_fc_LL = total_fc_LL/n
 mean_fc_RR = total_fc_RR/n
 mean_fc_RL = total_fc_RL/n
 mean_fc_LR = total_fc_LR/n
-mean_fc_LLRR = total_fc_LLRR/n
-mean_fc_LRRL = total_fc_LRRL/n
+
 np.savetxt(os.path.join(outdir, 'FC/LL_groupmean.csv'), mean_fc_LL, delimiter = ',')
 np.savetxt(os.path.join(outdir, 'FC/RR_groupmean.csv'), mean_fc_RR, delimiter = ',')
 np.savetxt(os.path.join(outdir, 'FC/LR_groupmean.csv'), mean_fc_LR, delimiter = ',')
 np.savetxt(os.path.join(outdir, 'FC/RL_groupmean.csv'), mean_fc_RL, delimiter = ',')
-np.savetxt(os.path.join(outdir, 'FC/intra_groupmean.csv'), mean_fc_LLRR, delimiter = ',')
-np.savetxt(os.path.join(outdir, 'FC/inter_groupmean.csv'), mean_fc_LRRL, delimiter = ',')
+
 
 # compute the gradients of functional connectivity for the mean LL fc
 # -> this will be our reference gradients for the UK-Biobank data
-np.random.seed(0)
+
 gm = GradientMaps(approach='dm', kernel='normalized_angle',
                   n_components=10,random_state=0)
 LL = np.array(pd.read_csv(os.path.join(outdir, 'FC/LL_groupmean.csv'), header=None))
@@ -117,47 +111,43 @@ np.savetxt(os.path.join(outdir, 'gradient/group_grad_LL_lambdas.csv'), gm.lambda
 
 # get the gradients for each subject and each FC (LL, RR, LR, RL) and
 # align them to the group-level LL gradients
-path_list = os.listdir(os.path.join(outdir, 'FC/LL/'))
+path_list = os.listdir(outdir + '/FC/LL/')
+path_list.sort()
 n = len(path_list)
-
 for i in range(n):
-  np.random.seed(0)
   align = GradientMaps(n_components=10, random_state=0, approach='dm', 
                        kernel='normalized_angle', alignment='procrustes')  
   fc_LL = np.array(pd.read_csv(os.path.join(outdir, 'FC/LL', path_list[i]),
                                             header=None))
   align.fit(fc_LL, reference=group_grad_LL)
-  grad_LL = align.gradients_
+  grad_LL = align.aligned_
   np.savetxt(os.path.join(outdir, 'gradient/LL', path_list[i]), 
                           grad_LL, delimiter = ',')
-  np.random.seed(0)
   align = GradientMaps(n_components=10, random_state=0, approach='dm', 
                        kernel='normalized_angle', alignment='procrustes')
   fc_RR = np.array(pd.read_csv(os.path.join(outdir, 'FC/RR', path_list[i]), 
                                             header=None))
   align.fit(fc_RR,reference=group_grad_LL)  
-  grad_RR = align.gradients_
+  grad_RR = align.aligned_
   np.savetxt(os.path.join(outdir, 'gradient/RR', path_list[i]), 
                           grad_RR, delimiter = ',')
-  np.random.seed(0)
   align = GradientMaps(n_components=10, random_state=0, approach='dm', 
                        kernel='normalized_angle', alignment='procrustes')  
   fc_LR = np.array(pd.read_csv(os.path.join(outdir, 'FC/LR', path_list[i]), 
                                             header=None))
   align.fit(fc_LR,reference=group_grad_LL)
-  grad_LR = align.gradients_
+  grad_LR = align.aligned_
   np.savetxt(os.path.join(outdir, 'gradient/LR', path_list[i]), 
                          grad_LR, delimiter = ',')
-  np.random.seed(0)
   align = GradientMaps(n_components=10, random_state=0, approach='dm', 
                        kernel='normalized_angle', alignment='procrustes')
   fc_RL = np.array(pd.read_csv(os.path.join(outdir, 'FC/RL', path_list[i]), 
                                             header=None))
   align.fit(fc_RL,reference=group_grad_LL)
-  grad_RL = align.gradients_
+  grad_RL = align.aligned_
   np.savetxt(os.path.join(outdir, 'gradient/RL', path_list[i]),
                           grad_RL, delimiter = ',')
-  print(i)
+  print('grad', path_list[i], i)
 
 # quality check: get the correlations between individual gradients and 
 # the group-level template gradient, swap the axis if negative,
@@ -166,7 +156,9 @@ group_grad_LL = np.array(pd.read_csv(os.path.join(outdir,
                                    'gradient/group_grad_LL.csv'), header=None))
 total_llrr = 0
 total_lrrl = 0
-
+path_list = os.listdir(outdir + '/gradient/LL/')
+path_list.sort()
+n = len(path_list)
 cons = ['LL', 'RR', 'LR', 'RL']
 for dir in path_list:
     for con in cons:
@@ -198,7 +190,7 @@ for dir in path_list:
     AI_lrrl = corrected_lr - corrected_rl    
     np.savetxt(os.path.join(outdir, 'gradient/intra', dir), AI_llrr, delimiter = ',')
     np.savetxt(os.path.join(outdir, 'gradient/inter', dir), AI_lrrl, delimiter = ',')
-    print('finish   ' + dir)
+    print('correct   ' + dir, i)
     # mean AI
     total_llrr = total_llrr + AI_llrr
     total_lrrl = total_lrrl + AI_lrrl

@@ -107,7 +107,7 @@ for i in path_list:
                        kernel='normalized_angle', alignment='procrustes')  
   fc_LL = np.array(pd.read_csv(os.path.join(datadir, 'LL', i), header=None))
   align.fit(fc_LL, reference=group_grad_LL)
-  grad_LL = align.gradients_
+  grad_LL = align.aligned_
   np.savetxt(os.path.join(graddir, 'LL', i), grad_LL, delimiter = ',')
 
   # FC RR
@@ -115,7 +115,7 @@ for i in path_list:
                        kernel='normalized_angle', alignment='procrustes')
   fc_RR = np.array(pd.read_csv(os.path.join(datadir, 'RR', i), header=None))
   align.fit(fc_RR,reference=group_grad_LL)
-  grad_RR = align.gradients_
+  grad_RR = align.aligned_
   np.savetxt(os.path.join(graddir, 'RR', i), grad_RR, delimiter = ',')  
 
   # FC LR 
@@ -123,7 +123,7 @@ for i in path_list:
                        kernel='normalized_angle', alignment='procrustes')
   fc_LR = np.array(pd.read_csv(os.path.join(datadir, 'LR', i), header=None))
   align.fit(fc_LR,reference=group_grad_LL)
-  grad_LR = align.gradients_
+  grad_LR = align.aligned_
   np.savetxt(os.path.join(graddir, 'LR', i), grad_LR, delimiter = ',')
   
   # FC RL  
@@ -132,7 +132,7 @@ for i in path_list:
   
   fc_RL = np.array(pd.read_csv(os.path.join(datadir, 'RL', i), header=None))
   align.fit(fc_RL,reference=group_grad_LL)
-  grad_RL = align.gradients_
+  grad_RL = align.aligned_
   np.savetxt(os.path.join(graddir, 'RL', i), grad_RL, delimiter = ',')
   print('finish   ' + i)
   

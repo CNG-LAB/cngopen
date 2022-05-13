@@ -67,22 +67,22 @@ for i in range(19):
     gm_ll = GradientMaps(approach = 'dm', kernel='normalized_angle', 
                         alignment='procrustes',n_components=10, random_state=0)
     gm_ll.fit(mq_ll[i],reference = grad_ref)
-    ll_grad[i] = gm_ll.gradients_
+    ll_grad[i] = gm_ll.aligned_
     # rr
     gm_rr = GradientMaps(approach = 'dm', kernel='normalized_angle', 
                         alignment='procrustes',n_components=10, random_state=0)
     gm_rr.fit(mq_rr[i],reference = grad_ref)
-    rr_grad[i] = gm_rr.gradients_
+    rr_grad[i] = gm_rr.aligned_
     # lr
     gm_lr = GradientMaps(approach = 'dm', kernel='normalized_angle', 
                         alignment='procrustes',n_components=10, random_state=0)
     gm_lr.fit(mq_lr[i],reference = grad_ref)
-    lr_grad[i] = gm_lr.gradients_
+    lr_grad[i] = gm_lr.aligned_
     # rl
     gm_rl = GradientMaps(approach = 'dm', kernel='normalized_angle', 
                         alignment='procrustes',n_components=10, random_state=0)
     gm_rl.fit(mq_rl[i],reference = grad_ref)
-    rl_grad[i] = gm_rl.gradients_
+    rl_grad[i] = gm_rl.aligned_
 
 # quality check: get the correlations between individual gradients and 
 # the group-level template gradient, swap the axis if negative    
