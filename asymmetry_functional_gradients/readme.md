@@ -2,7 +2,7 @@
 
 ### Here I'd like to introduce the repo for the preprint [Asymmetry of cortical functional hierarchy in humans and macaques suggests phylogenetic conservation and adaptation](https://www.biorxiv.org/content/10.1101/2021.11.03.466058v1.abstract).
 
-![img](conclusion_fig.png)
+![img](summary_fig.png)
 ---
 ## **Scripts**
 **1. Gradients in humans**
