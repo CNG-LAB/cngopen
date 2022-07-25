@@ -2,7 +2,7 @@
 calculates the rs-fMRI functional connectivity (FC) matrix for each UKB subject
 saves the intra- and inter-hemispheric FC patterns separately
 then calculate the gradients for intra- and inter-hemispheric FC patterns, 
-correct them, and compute Asymmetry Index, finally doing Cole-Anticevic network
+align them using procrustus, and compute Asymmetry Index, finally perform Cole-Anticevic network
 CA 12 networks comparisons with 0.
 """
 import os
