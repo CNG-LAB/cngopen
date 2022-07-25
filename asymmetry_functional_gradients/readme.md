@@ -40,8 +40,8 @@ extract the heritablity score of each parcel (based on bash).
 - NeuroSynth 24-terms functional maps are included under the 'data/metaanalysis/'
 
 ## **Key dependencies**
-- Python 3.8
-- [**Brainspace**](https://brainspace.readthedocs.io/en/latest/index.html)
+- [**Python 3.8**](https://www.python.org/downloads/release/python-380/)
+- [**BrainSpace**](https://brainspace.readthedocs.io/en/latest/index.html)
 - [**SOLAR**](www.solar-eclipse-genetics.org)
 - [**NeuroSynth**](https://neurosynth.org/)
 
