@@ -1,14 +1,15 @@
 """
-There are two parts: Normalize AI formula and DK atlas separately.
-Normalize AI formula: (l-r)(l+r), to aviod l+r becomeing 0, we change the scale
-using +1 for all gradients values to make them all positive. Finally to see the
-difference between using AI formula and using normalized AI formula.
+This analysis script includes two parts: 1). Normalize AI (asymmetry index) formula 
+and 2). compute FC gradients using the DK atlas.
 
-DK atlas: computes the gradients of functional connectivity for 4 different
-fashions: LL & RR intra-hemispheric and LR & RL inter-hemispheric fashion.
-using DK atlas, we compute the gradient scores we implement one sample t-test
-on intra-hemispheric and inter-hemispheric gradient score (LL-RR differences 
-and LR-RL differences).
+Normalize AI formula: (l-r)(l+r): to aviod l+r becomeing 0, we change the scale
+using +1 for all gradients values to make them all positive. Finally to investigate the
+difference of using the AI formula, used in the main manuscript, and using normalized AI formula.
+
+DK atlas: computes the gradients of functional connectivity (LL & RR intra-hemispheric 
+and LR & RL inter-hemispheric) using the DK atlas, after we compute the gradient scores 
+we implement one sample t-test on intra-hemispheric and inter-hemispheric gradient 
+score (LL-RR differences and LR-RL differences).
 """
 import os
 import pandas as pd
