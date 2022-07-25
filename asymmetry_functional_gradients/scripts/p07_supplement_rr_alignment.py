@@ -1,7 +1,7 @@
 '''
-To address the issue that alignment to different hemispheres would cause bias, here we
-also aligned the individual gradeints to the RR template. Then correlate the results of 
-LL with RR to see whether the patterns are similar or not.
+To address the potential issue that alignment to different hemispheres would cause bias results, here we
+aligned the individual gradeints to the RR template. Following we correlate the results of 
+LL with RR to see whether the patterns are similar (or not).
 '''
 import numpy as np
 import nibabel as nib
