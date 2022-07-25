@@ -1,8 +1,8 @@
 """
-computes the unaligned gradients of functional connectivity for 4 different fashions:
-LL & RR intra-hemispheric and LR & RL inter-hemispheric fashion.
+Computes the unaligned gradients of functional connectivity for
+LL & RR intra-hemispheric and LR & RL inter-hemispheric.
 
-change the input of HCP or UKB
+Change the input of HCP or UKB to select data from different studies.
 """
 import os
 import pandas as pd
