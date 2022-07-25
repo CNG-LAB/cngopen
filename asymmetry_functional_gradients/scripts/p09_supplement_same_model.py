@@ -1,7 +1,8 @@
 """
-computes the gradients of functional connectivity for 4 different fashions:
+computes the gradients of functional connectivity for:
 LL & RR intra-hemispheric and LR & RL inter-hemispheric fashion. Here we combined 
-LL and RR together, LR and RL together, to see the left and right hemispheres normalization.
+LL and RR together, LR and RL together, to investigate potential normalization differences
+resulting from computing separate gradients for left and right hemisphere connectomes.
 
 change the input of HCP or UKB
 """
