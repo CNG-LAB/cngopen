@@ -36,7 +36,7 @@ extract the heritablity score of each parcel (based on bash).
 
 ## **Data**
 - Human data are from Human Connectome Project [(HCP)](https://db.humanconnectome.org/) S1200 release and [UK Biobank](https://www.ukbiobank.ac.uk/).
-- Macaque data are from [PRIMATE-DE]((http://fcon_1000.projects.nitrc.org/indi/indiPRIME.html)) (site: Oxford).
+- Macaque data are from [PRIMATE-DE](http://fcon_1000.projects.nitrc.org/indi/indiPRIME.html) (site: Oxford).
 - NeuroSynth 24-terms functional maps are included under the 'data/metaanalysis/'
 
 ## **Key dependencies**
