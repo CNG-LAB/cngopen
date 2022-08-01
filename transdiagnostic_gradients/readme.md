@@ -19,7 +19,7 @@ Fig2.png![grafik](https://user-images.githubusercontent.com/93781179/155957301-e
 
 
 ### Dependencies
-For the current work, we rely on the ENIGMA Toolbox (https://enigma-toolbox.readthedocs.io/en/latest/; we used ENIGMA-1.1.3), brainspace (download here: https://brainspace.readthedocs.io/en/latest/pages/install.html; used here: BrainSpace-0.1.2), surfstat: https://mica-mni.github.io/surfstat/, cbrewer https://de.mathworks.com/matlabcentral/fileexchange/34087-cbrewer-colorbrewer-schemes-for-matlab, and NeuroSynth https://www.neurosynth.org.
+For the current work, we rely on the ENIGMA Toolbox (https://enigma-toolbox.readthedocs.io/en/latest/; we used ENIGMA-1.1.3), brainspace (download here: https://brainspace.readthedocs.io/en/latest/pages/install.html; used here: BrainSpace-0.1.2), surfstat: https://mica-mni.github.io/surfstat/, cbrewer https://de.mathworks.com/matlabcentral/fileexchange/34087-cbrewer-colorbrewer-schemes-for-matlab, and NeuroSynth https://www.neurosynth.org., and GAMBA https://github.com/dutchconnectomelab/GAMBA-MATLAB
 
 We ran the code on Mac OS Monterey 12.2.1 in Matlab 2021a. No non-standard hardware is required.
 
