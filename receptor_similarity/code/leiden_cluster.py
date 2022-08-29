@@ -4,7 +4,8 @@ Leiden clustering script used in manuscript
 NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION
 https://doi.org/10.1101/2022.08.26.505274
 
-Negative-assymetric Leiden clustering is implemented using the leidenalg python package (https://github.com/vtraag/leidenalg)
+Negative-assymetric Leiden clustering is implemented using the leidenalg python package (https://github.com/vtraag/leidenalg), adapting the approach suggested
+in the documentation (https://readthedocs.org/projects/leidenalg/downloads/pdf/latest/)
 """
 import networkx as nx
 import igraph as ig
