@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-This script contains the code behind the results in F1 in manuscript xxx
+This script contains various custom functions used in manuscript 
+NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION
+https://doi.org/10.1101/2022.08.26.505274
 """
 import numpy as np
 from scipy.stats import spearmanr
