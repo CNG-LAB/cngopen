@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-This script generates the data used in manuscript XXX
+This script contains the cortical data used in manuscript 
+NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION
+https://doi.org/10.1101/2022.08.26.505274
 """
 from netneurotools.networks import struct_consensus
 from netneurotools.freesurfer import find_parcel_centroids
@@ -17,7 +19,7 @@ parcels = 100
 input_path = 'path/to/data/'
 
 #pet data
-#parcellate study maps
+#parcellate study maps, adapted from Hansen et al, https://doi.org/10.1101/2021.10.28.466336
 atl='schaefer'
 parc = 100
 scale = '{}Parcels7Networks'.format(parc)
