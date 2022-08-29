@@ -22,11 +22,12 @@ from palettable.scientific.diverging import Roma_4
 
 input_path = 'path/to/data/'
 res_p = 'path/to/results/F1/'
+mask_p='path/to/masks/'
 # load data
 
 
 mask = NiftiMasker(
-    r'C:/Users/benja/Documents/md_thesis/data/tian_subcortex/masks/S1_3T/tian_binary_mask_total.nii.gz').fit()
+    mask_p + 'tian_binary_mask_total.nii.gz').fit()
 
 # hierarchical clustering
 subcortex_regions = pd.read_csv(input_path + 'subcortex_tian_regions.csv', index_col=0)
@@ -72,7 +73,7 @@ del masks[-1]
 del masks[-7]
 del masks[-7]
 masks.sort()
-with open(input_path + 'Tian_Subcortex_S1_3T_label.txt') as f:
+with open(mask_p + 'Tian_Subcortex_S1_3T_label.txt') as f:
     s = f.readlines()
     s = [x.strip() for x in s]
 s.sort()
@@ -124,7 +125,7 @@ plt.tight_layout()
 f.savefig(res_p + 'sg1_raincloud.png')
 
 # subcortico-cortical
-cortex = pd.read_csv(r'C:\Users\benja\Documents\md_thesis\data\stable\100Parcels7Networks_receptorprofiles.csv',
+cortex = pd.read_csv(input_path +'s100Parcels7Networks_receptorprofiles.csv',
                      index_col=0)
 cortex = cortex.apply(zscore)
 sxc = spearman(cortex.transpose().values, subcortex.transpose().values)
