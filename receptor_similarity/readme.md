@@ -1,1 +1,1 @@
-
+This repository contains code and custom files necessary to reproduce the main results of the manuscript "NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION", https://doi.org/10.1101/2022.08.26.505274
