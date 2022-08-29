@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-Leiden clustering script for xxx
+Leiden clustering script used in manuscript 
+NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION
+https://doi.org/10.1101/2022.08.26.505274
+
+Negative-assymetric Leiden clustering is implemented using the leidenalg python package (https://github.com/vtraag/leidenalg)
 """
 import networkx as nx
 import igraph as ig
@@ -9,6 +13,7 @@ from scipy.stats import zscore
 import pandas as pd
 import leidenalg as ld
 from sklearn.metrics.cluster import adjusted_rand_score
+
 
 input_path = 'path/to/data/'
 parcels=100
