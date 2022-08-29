@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-This script generates the data used in manuscript XXX
+This script contains the subcortical data used in manuscript 
+NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION
+https://doi.org/10.1101/2022.08.26.505274
 """
 from nilearn.input_data import NiftiMasker
 from nilearn import image as nimg
@@ -11,12 +13,12 @@ import pandas as pd
 from scipy.stats import zscore
 
 input_path='path/to/data/'
-
+mask_p='path/to/masks/'
 #get subcortical data
 def masking():
     path_out=input_path +'subcortex_masked/'
     images=os.listdir(input_path)
-    mask = input_path + 'masks/S1_3T/tian_binary_mask_total.nii.gz'
+    mask = mask_p+'tian_binary_mask_total.nii.gz'
     masker=NiftiMasker(mask_img=mask).fit()
     for image in images:
         pet=nimg.load_img(input_path + image)
@@ -52,8 +54,7 @@ for key, value in receptors.items():
 df = pd.DataFrame(rec_d)
 df.columns = [x + '.csv' for x in df.columns]
 _5HT1b = (zscore(df['5HT1b_p943_hc22_savli.csv']) * 22 +
-          zscore(df['5HT1b_p943_hc65_gallezot.csv']) * 65) / (
-                 22 + 65)
+          zscore(df['5HT1b_p943_hc65_gallezot.csv']) * 65) / (22 + 65)
 _D2 = (zscore(df['D2_flb457_hc37_smith.csv']) * 37 +
        zscore(df['D2_flb457_hc55_sandiego.csv']) * 55) / (37 + 55)
 _mGluR5 = (zscore(df['mGluR5_abp_hc22_rosaneto.csv']) * 22 +
@@ -76,8 +77,7 @@ df_wm_reg = pd.DataFrame(d)
 df_wm_reg.to_csv(path_in +'subcortex_tian.csv')
 
 #make regional frame
-mask_path=input_path + 'masks/S1_3T/'
-whole_mask=mask_path + 'tian_binary_mask_total.nii.gz'
+whole_mask=mask_p+ 'tian_binary_mask_total.nii.gz'
 whole_mask=NiftiMasker(mask_img=whole_mask).fit()
 in_file=df_wm_reg
 in_file=in_file.apply(zscore)
@@ -100,4 +100,4 @@ for subregion in range(len(all_files)):
             results[receptor]=[avg]
 
 df=pd.DataFrame(results)
-df.to_csv(path_out)
+df.to_csv(path_in +'subcortex_tian_regions.csv')
