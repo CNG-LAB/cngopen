@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-This script contains the code behind the results in F4 in manuscript xxx
+This script contains the code behind the results in F4 in manuscript 
+NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION
+https://doi.org/10.1101/2022.08.26.505274
 """
 from scipy.stats import zscore, spearmanr
 import numpy as np
@@ -113,7 +115,7 @@ fig.savefig(res_p + 'corr_heatmap.png')
 # coupling
 
 def coupler(size):
-    path = r'C:\Users\benja\Documents\md_thesis\data\stable\\'
+    path = input_path
     RC = pd.read_csv(path + '{}Parcels7Networks_receptorprofiles.csv'.format(size), index_col=0)
     RC = RC.apply(zscore)
     RC = RC.transpose().corr('spearman')
@@ -141,7 +143,7 @@ def coupler(size):
 
 cpl_100 = coupler(parcels)
 
-types_100 = np.load(r'C:\Users\benja\Documents\md_thesis\data\stable\mesulam_100parc.npy')
+types_100 = np.load(input_path + 'mesulam_100parc.npy')
 
 col_types = {'paralimbic': Vivid_4.mpl_colors[3], 'unimodal': Vivid_4.mpl_colors[1],
              'idiotypic': Vivid_4.mpl_colors[0], 'heteromodal': Vivid_4.mpl_colors[2]}
