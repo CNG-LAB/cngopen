@@ -1,1 +1,2 @@
-
+This repository contains the code necessary to reproduce the main figures in the manuscript "NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION", https://doi.org/10.1101/2022.08.26.505274. <br>
+Openly available data is linked and cited in the manuscript. Necessary custom files are uploaded to https://github.com/CNG-LAB/cngopen/tree/main/receptor_similarity/var_data
