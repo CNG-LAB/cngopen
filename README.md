@@ -1,6 +1,6 @@
 # cngopen
 
-This is the public github repository for the Cognitive Neurogenetics lab. We are affiliated to Max Planck Insitute for Human Cognitive and Brain Sciences in Leipzig https://www.cbs.mpg.de/independent-research-groups/cognitive-neurogenetics, Germany & the Insititute for Neuroscience and Medicine Brian and Behaviour (INM-7) at Forschungszentrum Jülich, Germany https://www.fz-juelich.de/en/inm/inm-7/research-groups/cognitive-neurogenetics.
+This is the public GitHub repository for the Cognitive Neurogenetics lab. We are affiliated to Max Planck Insitute for Human Cognitive and Brain Sciences in Leipzig https://www.cbs.mpg.de/independent-research-groups/cognitive-neurogenetics, Germany & the Insititute for Neuroscience and Medicine Brian and Behaviour (INM-7) at Forschungszentrum Jülich, Germany https://www.fz-juelich.de/en/inm/inm-7/research-groups/cognitive-neurogenetics.
 
 See our labsite here: https://cng-lab.github.io/.
 
