@@ -189,7 +189,7 @@ SC=struct_consensus(sc, dist, hemiid, True)
 np.save(input_path + 'mics_sc_{}.npy'.format(parc), SC)
 np.save(input_path + 'mics_fc_{}.npy'.format(parc), fc)
 np.save(input_path + 'mics_mpc_{}.npy'.format(parc), mpc)
-
+np.save(input_path + 'cort_dist_{}.npy'.format(parc), dist)
 
 
 
