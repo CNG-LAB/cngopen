@@ -72,7 +72,7 @@ r_2={}
 r_3={}
 
 #generate permuted brain maps
-dist=np.load(input_path + 'tian_euclidean_distance.npy')
+dist=np.load(input_path + 'cort_dist_{}.npy'.format(parcels))
 ssm=SurrogateMaps(kernel='invdist')
 ssm.fit(dist)
 def gen_vgm(grad):
