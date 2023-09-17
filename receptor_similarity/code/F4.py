@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 This script contains the code behind the results in F4 in manuscript 
-NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION
-https://doi.org/10.1101/2022.08.26.505274
+Cerebral chemoarchitecture shares organizational traits with brain structure and function
+Elife. 2023 Jul 13;12:e83843. doi: 10.7554/eLife.83843.
 """
 from scipy.stats import zscore, spearmanr
 import numpy as np
