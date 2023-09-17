@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 This script contains the code behind the results in F3 in manuscript 
-NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION
-https://doi.org/10.1101/2022.08.26.505274
+Cerebral chemoarchitecture shares organizational traits with brain structure and function
+Elife. 2023 Jul 13;12:e83843. doi: 10.7554/eLife.83843.
 """
 from enigmatoolbox import datasets
 from enigmatoolbox.utils.parcellation import parcel_to_surface
@@ -149,153 +149,60 @@ plot_corr(enig_g3_spin, 'rc_g3_enigma.png')
 
 # functional activation
 
-g1 = np.load(input_path + 'rc_g1_{}.npy'.format(parcels))
-g2 = np.load(input_path + 'rc_g2_{}.npy'.format(parcels))
-g3 = np.load(input_path + 'rc_g3_{}.npy'.format(parcels))
+'''
+This script correlates meta-analytical terms with significance testing.
+'''
+import numpy as np
+import pandas as pd
+from scipy.stats import spearmanr
+import nibabel as nib
+from nilearn.input_data import NiftiLabelsMasker
+from nilearn import datasets
+import re
+import os
+import argparse
 
-g1_vgm = np.load(input_path + 'rc_g1_{}_vgm.npy'.format(parcels))
-g2_vgm = np.load(input_path + 'rc_g2_{}_vgm.npy'.format(parcels))
-g3_vgm = np.load(input_path + 'rc_g3_{}_vgm.npy'.format(parcels))
+path=input_path
+rc_g1=np.load(path + 'rc_g1_100.npy')
+rc_g2=np.load(path + 'rc_g2_100.npy')
+rc_g3=np.load(path + 'rc_g3_100.npy')
+rc_g1_vgm=np.load(path + 'rc_g1_100_vgm.npy')
+rc_g2_vgm=np.load(path + 'rc_g2_100_vgm.npy')
+rc_g3_vgm=np.load(path + 'rc_g3_100_vgm.npy')
 
-grads = [g1, g2, g3]
-grads_vgm = [g1_vgm, g2_vgm, g3_vgm]
+grads=[rc_g1, rc_g2, rc_g3]
+grads_vgm=[rc_g1_vgm, rc_g2_vgm, rc_g3_vgm]
 
-path_neurosynth = '/path/to/brainstat/data/'
-nii_files = os.listdir(path_neurosynth)
-dataset = nilearn.datasets.fetch_atlas_schaefer_2018(n_rois=parcels, yeo_networks=7)
+dataset=datasets.fetch_atlas_schaefer_2018(n_rois=100, yeo_networks=7)
 mask = NiftiLabelsMasker(dataset['maps'], resampling_target='data', strategy='mean').fit()
-names = []
-pat = re.compile('__([A-Za-z0-9 ]+).+z$')
 
-
-def vgm_matcher(inp: list, inp_vgm: list):
+names=[]
+path=path + r"lda50_images\\"
+select=os.listdir(path)
+def vgm_matcher(inp:list, inp_vgm:list):
     n_rand = 1000
-    correlations = []
-    p = []
+    correlations=[]
+    p=[]
     for i in range(len(inp)):
-        correlations.append(np.zeros(len(nii_files)))
-        p.append(np.zeros(len(nii_files)))
-    for idx, val in enumerate(nii_files):
-        names.append(re.search(pat, val)[1])
-        feature_data = nib.load(path_neurosynth + val)
-        trafo = mask.transform(feature_data).squeeze()
+        correlations.append(np.zeros(50))
+        p.append(np.zeros(50))
+    for idx, val in enumerate(select):
+        names.append(val[1])
+        feature_data = nib.load(path+val[0])
+        trafo=mask.transform(feature_data).squeeze()
         for i in range(len(inp)):
             grad = inp[i]
             grad_vgm = inp_vgm[i]
-            r_obs = spearmanr(grad, trafo)[0]
-            correlations[i][idx] = r_obs
-            r_spin = np.empty(n_rand)
-
+            r_obs=spearmanr(grad, trafo)[0]
+            correlations[i][idx]=r_obs
+            r_spin=np.empty(n_rand)
             for j, perm in enumerate(grad_vgm):
-                r_spin[j] = spearmanr(perm, trafo)[0]
-            p[i][idx] = np.mean(np.abs(r_spin) >= np.abs(r_obs))
+                r_spin[j]= spearmanr(perm, trafo)[0]
+            p[i][idx]=np.mean(np.abs(r_spin) >= np.abs(r_obs))
 
     for i in range(len(inp)):
-        df = pd.DataFrame({"Spearman's r": correlations[i], 'p_vgm': p[i]}, index=names)
-        df.sort_values(by="Spearman's r", inplace=True)
-        df.to_csv(input_path + 'g{}_{}_nsynth_vgm.csv'.format(i + 1, parcels))
-    return
-
-
+        df=pd.DataFrame({"Spearman's r": correlations[i], 'p_vgm': p[i]}, index=names)
+        df.to_csv(res_p + r'g{}_{}_nsynth_vgm.csv'.format(i+1,100))
+        
 vgm_matcher(grads, grads_vgm)
 
-n_g1 = pd.read_csv(input_path + 'g1_{}_nsynth_vgm.csv'.format(parcels), index_col=0)
-n_g2 = pd.read_csv(input_path + 'g2_{}_nsynth_vgm.csv'.format(parcels), index_col=0)
-n_g3 = pd.read_csv(input_path + 'g3_{}_nsynth_vgm.csv'.format(parcels), index_col=0)
-
-with open(input_path + 'supp_l1.txt', 'r') as l:
-    interest = l.readlines()
-
-g1_interest = n_g1.transpose()[interest].transpose()
-g2_interest = n_g2.transpose()[interest].transpose()
-g3_interest = n_g3.transpose()[interest].transpose()
-
-# g1
-g1_interest = g1_interest[g1_interest['p_vgm'] < 0.05]
-keep_g1 = ['face recognition', 'autobiographical memory', 'mind tom', 'secondary somatosensory', 'parkinson',
-           'primary somatosensory','coordination', 'motor imagery', 'painful', 'response selection', 'anticipation',
-           'inhibitory control','executive functions', 'control network', 'adhd', 'goal directed', 'insight',
-           'focusing', 'illusion','manipulation', 'interference']
-
-total = g1_interest.transpose()[keep_g1].transpose()
-for_treemap = total.reset_index()
-for_treemap['abs corr'] = np.abs(for_treemap["Spearman's r"])
-test = [float("{:.2f}".format(x)) for x in for_treemap['abs corr']]
-for_treemap['abs corr'] = test
-breaks = [x.replace(' ', '<br>') for x in list(for_treemap['index'])]
-for_treemap['breaks'] = breaks
-for_treemap.iloc[1, 4] = 'autobio-<br>graphical<br>memory'
-for_treemap.iloc[17, 4] = 'focu-<br>sing'
-
-fig = px.treemap(for_treemap, names='breaks', path=['breaks'], values="abs corr", color="Spearman's r",
-                 range_color=[-0.7, 0.7], color_continuous_scale='rdbu_r')
-fig.update_layout(
-    uniformtext=dict(minsize=28, mode='show'), margin=dict(t=50, l=25, r=25, b=25), width=800, height=1000,
-    font=dict(family='arial'),
-    paper_bgcolor='rgba(0,0,0,0)',
-    plot_bgcolor='rgba(0,0,0,0)')
-
-fig.update_layout({'plot_bgcolor': 'rgba(255, 255, 255, 255)', 'paper_bgcolor': 'rgba(255, 255, 255, 255)', })
-fig.update_coloraxes(colorbar_orientation='h', colorbar_thickness=10,
-                     colorbar_title_font_size=10, colorbar_tickfont_size=10)
-fig.write_image(res_p + 'g1_nsynth.png')
-
-# g2
-g2_interest = g2_interest[g2_interest['p_vgm'] < 0.05]
-keep_g2 = ['primary visual', 'executive functions', 'control network', 'response selection', 'belief', 'motor pre',
-           'intention', 'painful', 'intelligence', 'working memory', 'disorder ocd', 'parkinson', 'motor sma',
-           'uncertainty', 'goal', 'subtraction', 'judge', 'rules', 'secondary somatosensory', 'primary somatosensory',
-           'efficiency', 'risky', 'decision making', 'attention', 'cognition', 'thoughts', 'bipolar disorder', 'theory',
-           'self', 'mental state', 'beliefs', 'mind','planning']
-
-total = g2_interest.transpose()[keep_g2].transpose()
-for_treemap = total.reset_index()
-for_treemap['abs corr'] = np.abs(for_treemap["Spearman's r"])
-test = [float("{:.2f}".format(x)) for x in for_treemap['abs corr']]
-for_treemap['abs corr'] = test
-breaks = [x.replace(' ', '<br>') for x in list(for_treemap['index'])]
-for_treemap['breaks'] = breaks
-for_treemap.iloc[19, 4] = 'secondary<br>somato-<br>sensory'
-for_treemap.iloc[20, 4] = 'primary<br>somato-<br>sensory'
-for_treemap.iloc[25, 4] = 'cog-<br>nition'
-for_treemap.iloc[24, 4] = 'atten-<br>tion'
-fig = px.treemap(for_treemap, names='breaks', path=['breaks'], values="abs corr", color="Spearman's r",
-                 range_color=[-0.7, 0.7], color_continuous_scale='rdbu_r')
-fig.update_layout(
-    uniformtext=dict(minsize=28, mode='show'), margin=dict(t=50, l=25, r=25, b=25), width=800, height=1000,
-    font=dict(family='arial'),
-    paper_bgcolor='rgba(0,0,0,0)',
-    plot_bgcolor='rgba(0,0,0,0)')
-
-fig.update_layout({'plot_bgcolor': 'rgba(255, 255, 255, 255)', 'paper_bgcolor': 'rgba(255, 255, 255, 255)', })
-fig.update_coloraxes(colorbar_orientation='h', colorbar_thickness=10,
-                     colorbar_title_font_size=10, colorbar_tickfont_size=10)
-fig.write_image(res_p + 'g2_nsynth.png')
-
-# g3
-g3_interest = g3_interest[g3_interest['p_vgm'] < 0.05]
-keep_g3 = ['early visual', 'navigation', 'visual attention', 'empathy', 'social cognitive', 'primary auditory',
-           'listening', 'consolidation', 'dementia']
-total = g3_interest.transpose()[keep_g3].transpose()
-for_treemap = total.reset_index()
-for_treemap['abs corr'] = np.abs(for_treemap["Spearman's r"])
-test = [float("{:.2f}".format(x)) for x in for_treemap['abs corr']]
-for_treemap['abs corr'] = test
-breaks = [x.replace(' ', '<br>') for x in list(for_treemap['index'])]
-for_treemap['breaks'] = breaks
-for_treemap.iloc[19, 4] = 'secondary<br>somato-<br>sensory'
-for_treemap.iloc[20, 4] = 'primary<br>somato-<br>sensory'
-for_treemap.iloc[25, 4] = 'cog-<br>nition'
-for_treemap.iloc[24, 4] = 'atten-<br>tion'
-fig = px.treemap(for_treemap, names='breaks', path=['breaks'], values="abs corr", color="Spearman's r",
-                 range_color=[-0.7, 0.7], color_continuous_scale='rdbu_r')
-fig.update_layout(
-    uniformtext=dict(minsize=28, mode='show'), margin=dict(t=50, l=25, r=25, b=25), width=800, height=1000,
-    font=dict(family='arial'),
-    paper_bgcolor='rgba(0,0,0,0)',
-    plot_bgcolor='rgba(0,0,0,0)')
-
-fig.update_layout({'plot_bgcolor': 'rgba(255, 255, 255, 255)', 'paper_bgcolor': 'rgba(255, 255, 255, 255)', })
-fig.update_coloraxes(colorbar_orientation='h', colorbar_thickness=10,
-                     colorbar_title_font_size=10, colorbar_tickfont_size=10)
-fig.write_image(res_p + 'g3_nsynth.png')
