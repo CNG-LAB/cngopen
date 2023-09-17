@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
 This script contains the code behind the results in F2 in manuscript 
-NEUROTRANSMITTER TRANSPORTER/RECEPTOR CO-EXPRESSION SHARES ORGANIZATIONAL TRAITS WITH BRAIN STRUCTURE AND FUNCTION
-https://doi.org/10.1101/2022.08.26.505274
+Cerebral chemoarchitecture shares organizational traits with brain structure and function
+Elife. 2023 Jul 13;12:e83843. doi: 10.7554/eLife.83843.
 """
 
 from scipy.stats import zscore
+import nilearn
 import numpy as np
 from nilearn import datasets, plotting
 from nilearn.input_data import NiftiMasker
@@ -19,15 +20,16 @@ from brainspace.utils.parcellation import map_to_labels
 import seaborn as sns
 import matplotlib.pyplot as plt
 import ptitprince as pt
-from mn_funcs import spearman
+from mn_funcs import spearman, vgm
+from brainspace.null_models import SurrogateMaps
 from palettable.scientific.diverging import Roma_4
 
 input_path = 'path/to/data/'
-res_p = 'path/to/results/F1/'
+res_p = 'path/to/results/F2/'
 mask_p='path/to/masks/'
+
+
 # load data
-
-
 mask = NiftiMasker(
     mask_p + 'tian_binary_mask_total.nii.gz').fit()
 
@@ -55,6 +57,48 @@ fig = plt.figure(figsize=(14, 7))
 plotting.plot_stat_map(sg1, bg_img=bg, draw_cross=False, display_mode='ortho',
                        black_bg=False, cmap='viridis_r', annotate=False, figure=fig, colorbar=False,
                        output_file=res_p + 'subcort_grad_1_proj.png', dim=2, cut_coords=(12, -4, 2))
+
+#receptor correlations
+#generate vgm maps
+coords=np.load(input_path + 'tian_coordinates.npy')
+num=len(coords)
+dist=np.empty((num,num))
+for i in range(num):
+    for j in range(num):
+        dist[i,j]=np.linalg.norm(coords[i]-coords[j])
+        
+ssm=SurrogateMaps(kernel='invdist')
+ssm.fit(dist)
+
+g1_vgm = ssm.randomize(s_g1, n_rep=n_surrogate_datasets)
+g1_vgm_f = np.ma.filled(g1_vgm, np.nan)
+g1_vgm_f = g1_vgm_f.astype('float32')
+
+#gradient-receptor-correlations
+r_1={}
+
+for i in subcortex.columns:
+    sub=subcortex[i]
+    r_1[i]=vgm(sub, s_g1, g1_vgm_f)
+
+def plot_dens_corr(inp, fname):
+    df1=pd.DataFrame.from_dict(inp, orient='index')
+    df1.columns=["Spearman's r", 'p']
+    df1.sort_values(by="Spearman's r", inplace=True)
+    fig, ax=plt.subplots(figsize=(15,5))
+    color=['lightskyblue' if x > 0.05 else 'dodgerblue' for x in df1['p']]
+    ax.bar(range(len(df1)), df1["Spearman's r"], color=color)
+    ax.set_xticks(range(len(df1)), labels=list(df1.index))
+    ax.set_ylabel("Spearman's r", fontsize=28)
+    ax.tick_params(labelsize=26)
+    plt.xticks(rotation=30+270)
+    plt.tight_layout()
+    fig.savefig(res_p + fname)
+    return
+
+plot_dens_corr(r_1, 'G1_receptors.png')
+
+
 # scree
 scat = [(x / sum(gm.lambdas_)) * 100 for x in gm.lambdas_]
 fig, ax = plt.subplots(figsize=(8, 8))
@@ -126,8 +170,8 @@ ax.tick_params(labelsize=24)
 plt.tight_layout()
 f.savefig(res_p + 'sg1_raincloud.png')
 
-# subcortico-cortical
-cortex = pd.read_csv(input_path +'s100Parcels7Networks_receptorprofiles.csv',
+# subcortico-cortical - cortex projection
+cortex = pd.read_csv(input_path +'100Parcels7Networks_receptorprofiles.csv',
                      index_col=0)
 cortex = cortex.apply(zscore)
 sxc = spearman(cortex.transpose().values, subcortex.transpose().values)
@@ -148,3 +192,28 @@ plot_hemispheres(surf_lh, surf_rh, array_name=grad, size=(750, 600), color_bar=F
                  layout_style='grid', zoom=1.2,
                  cmap='viridis_r', screenshot=True, filename=res_p + 'sxc_g3.png')
 
+# subcortico-cortical - subcortex projection
+gm_sxc = GradientMaps(approach='dm', kernel='normalized_angle')
+gm_sxc.fit(sxc.T)
+mask=ct
+sg1=mask.inverse_transform(gm_sxc.gradients_[:,0])
+sg2=mask.inverse_transform(gm_sxc.gradients_[:,1])
+sg3=mask.inverse_transform(gm_sxc.gradients_[:,2])
+
+bg=nilearn.datasets.load_mni152_template(1)
+
+fig=plt.figure(figsize=(14,7))
+plotting.plot_stat_map(sg1, bg_img=bg, draw_cross=False, display_mode='ortho', 
+                       black_bg=False, cmap='viridis_r',annotate=False, figure=fig, colorbar=False,
+                       output_file=res_p + 'sxc_subcort_1.png', dim=2,cut_coords=(12,-4,2)
+                           )
+fig=plt.figure(figsize=(14,7))
+plotting.plot_stat_map(sg2, bg_img=bg, draw_cross=False, display_mode='ortho', 
+                       black_bg=False, cmap='viridis_r',annotate=False, figure=fig, colorbar=False,
+                       output_file=res_p + 'sxc_subcort_2.png', dim=2,cut_coords=(12,-4,2)
+                           )
+fig=plt.figure(figsize=(14,7))
+plotting.plot_stat_map(sg3, bg_img=bg, draw_cross=False, display_mode='ortho', 
+                       black_bg=False, cmap='viridis_r',annotate=False, figure=fig, colorbar=False,
+                       output_file=res_p + 'sxc_subcort_3.png', dim=2,cut_coords=(12,-4,2)
+                           )
