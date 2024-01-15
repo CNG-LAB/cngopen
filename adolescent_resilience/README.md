@@ -1,7 +1,7 @@
-## Dynamic change in adolescent resilience and vulnerability to environmental adversity links to cortical myelination trajectories
-# This repository contains scripts and data to reproduce analyses:
+# Dynamic change in adolescent resilience and vulnerability to environmental adversity links to cortical myelination trajectories
+## This repository contains scripts and data to reproduce analyses:
 
-# ScrFun: 
+## ScrFun: 
 **distress_prediction.ypnb** -> Generates resilience scores by predicting well-being / distress from adversity measures
     main output: resilience_scores_prediction.csv; resilience_scores_prediction_repeated_measures.csv —> for multiple time points (use this)
 **MT_delta_Figures_1_2.m** —> computes change in MT and FC and relation to change in resilience score, generates Figures 1&2.
