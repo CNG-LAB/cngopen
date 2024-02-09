@@ -15,11 +15,11 @@ The repo includes code for analysis and plotting.
 - `01_build_struc_connectivity_matrix.py` - loads probabilistic tractography data from each subject (output of probtrackx) and build thalamocortical structural connectivity matrix
 - `02_thalamic_sc_gradient.py` - uses TC structural connectivity matrix as input -> computes TC structural connectivity gradients
 - `fig1/01_thalamic_gradients.ipynb` - plotting gradients
-- `fig1/02_Decoding_with_Thomas_atlas_lh.ipynb` - Decoding THOMAS
+- `fig1/02_Decoding_with_Thomas_atlas_lh.ipynb` - Decoding THOMAS atlas
 
 ### 2.  Contextualization of Gradients with Microstructure and Functional Connectivity.
 
-- `04_create_grouplevel_thalamic_T1q_map.py` - creates grouplevel qT1 map for left and right hemisphere
+- `04_create_grouplevel_thalamic_T1q_map.py` - creates thalamic grouplevel qT1 map for left and right hemisphere
 - `05_warp_rsfMRI_to_MNI` - script to warp rsfMRI to MNI using ANTS and the micapipe transformation files
 - `06_create_functional_connectivity_matrix.py` - uses thalamus and cortex timeseries and creates TC functional connectivity matrix
 - `07_compute_fc_gradients.py` - uses TC functional connectivity matrix as input -> computes TC functional connectivity gradients
