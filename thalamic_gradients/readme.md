@@ -65,8 +65,8 @@ The repo includes code for analysis and plotting.
 `conda_env` contains the environment.yml files to recreate the conda environments
 
 Key dependencies are 
-- [Brainspace v. 0.1.3] (https://brainspace.readthedocs.io/en/latest/index.html)
-- [Brainsmash v. 0.11.0] (https://brainsmash.readthedocs.io/en/latest/)
+- [Brainspace v. 0.1.3](https://brainspace.readthedocs.io/en/latest/index.html)
+- [Brainsmash v. 0.11.0](https://brainsmash.readthedocs.io/en/latest/)
 
 
 
