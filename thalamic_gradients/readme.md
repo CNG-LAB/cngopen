@@ -59,6 +59,8 @@ The repo includes code for analysis and plotting.
 - `Supp_thomas_nuclei_projection/sc_thomas nuclei.ipynb` - plotting
 
 ## **Data**
+- MICA-MICs dataset Royer et al., 2022
+- The data used in for this study can be downloaded from: https://portal.conp.ca/dataset?id=projects/mica-mics
 
 ## **Dependencies**
 
