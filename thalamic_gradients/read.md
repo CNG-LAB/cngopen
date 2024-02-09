@@ -43,26 +43,22 @@ The repo includes code for analysis and plotting.
 - `fig1/01_thalamic_gradients.ipynb` - plotting gradients
 - `fig1/02_Decoding_with_Thomas_atlas_lh.ipynb` - Decoding with THOMAS
 
-# work in progress
+### Supp 3. Thalamocortical Functional Connectivity Gradients (RH). 
+- `fig2/func_gradients_right.ipynb` - plotting right hem functional gradient
 
-### Supp3.  
+### Supp4.  Cortical Projections of Structural Connectivity Gradients and their Association to Functional Connectivity and Structural Covariance (RH)
+-`fig3/on_cortex-right_hem.ipynb` - plotting cortex projections right
+-`fig3/Yeo_violin-right_hem.ipynb` - Decoding with Yeo Networks right
 
-### Supp4.  
-
-### Supp5.  
+### Supp5.   Cross-Check of Structural Covariance Results. 
+- `10_Supp_QC_scov.py` - Supplementary, crosscorrelation: correlating between left voxelwise thalamic T1q and wholebrain cortex parcel T1q ->links this to left structural connectivity gradients by correlating columns (parcels) of structural covariance with G1 and G2 gradient loadings (same for right)
+- `Supp_QC_scov/QC_scov.ipynb` - plotting
 
 ### Supp6.  
+- `09_Supp_groundtruth.py` - Supplementary, mean projection of sc, fc, and scov of thomas nucleus (AV, VLP, MD) on surface
+- `Supp_thomas_nuclei_projection/sc_thomas nuclei.ipynb` - plotting
 
 
 
-
-- `09_Supp_groundtruth.py` - Supplementary, mean projection of sc, fc, and scov of thomas nucleus (AV, VLP, MD) on surface 
-- `10_Supp_QC_scov.py` - Supplementary, crosscorrelation: correlating between left voxelwise thalamic T1q and wholebrain cortex parcel T1q ->links this to left structural connectivity gradients by correlating columns (parcels) of structural covariance with G1 and G2 gradient loadings (same for right)
-
-
-- `fig2` -  Supp3
-- `fig3` -  Supp4
-- `Supp_QC_scov` - Supp5
-- `Supp_thomas_nuclei_projection` - Supp6
 
 
