@@ -4,7 +4,7 @@
 ### *"A Multimodal Characterization of Low-Dimensional Thalamocortical Structural Connectivity Patterns" (2024)*
 preprinted: https://doi.org/10.1101/2024.02.01.578366
 
-![alt text](https://github.com/CNG-LAB/cngopen/blob/main/thalamic_gradients/thala_gradients.png) 
+![img](https://github.com/CNG-LAB/cngopen/blob/main/thalamic_gradients/thala_gradients.png) 
 
 ## **Scripts** 
 The repo includes code for analysis and plotting. 
@@ -43,7 +43,7 @@ The repo includes code for analysis and plotting.
 - `fig1/01_thalamic_gradients.ipynb` - plotting gradients
 - `fig1/02_Decoding_with_Thomas_atlas_lh.ipynb` - Decoding with THOMAS
 
-### Supp 3. Thalamocortical Functional Connectivity Gradients (RH). 
+### Supp3. Thalamocortical Functional Connectivity Gradients (RH). 
 - `fig2/func_gradients_right.ipynb` - plotting right hem functional gradient
 
 ### Supp4.  Cortical Projections of Structural Connectivity Gradients and their Association to Functional Connectivity and Structural Covariance (RH)
