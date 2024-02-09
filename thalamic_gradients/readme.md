@@ -47,8 +47,8 @@ The repo includes code for analysis and plotting.
 - `fig2/func_gradients_right.ipynb` - plotting right hem functional gradient
 
 ### Supp4.  Cortical Projections of Structural Connectivity Gradients and their Association to Functional Connectivity and Structural Covariance (RH)
--`fig3/on_cortex-right_hem.ipynb` - plotting cortex projections right
--`fig3/Yeo_violin-right_hem.ipynb` - Decoding with Yeo Networks right
+- `fig3/on_cortex-right_hem.ipynb` - plotting cortex projections right
+- `fig3/Yeo_violin-right_hem.ipynb` - Decoding with Yeo Networks right
 
 ### Supp5.   Cross-Check of Structural Covariance Results. 
 - `10_Supp_QC_scov.py` - Supplementary, crosscorrelation: correlating between left voxelwise thalamic T1q and wholebrain cortex parcel T1q ->links this to left structural connectivity gradients by correlating columns (parcels) of structural covariance with G1 and G2 gradient loadings (same for right)
