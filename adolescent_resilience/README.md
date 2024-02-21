@@ -33,7 +33,7 @@ This study is based on data from the Neuroscience in Psychiatry Network. You can
 - Other uploaded data includes colormaps, cortical types and yeo atlases, permutation indices.
 
 ## Requirements 
-Matlab scripts were run in Matlab 2022b, Python scripts were run in Python 3.10. 
+Matlab scripts were run in Matlab 2022b, Python scripts were run in Python 3.10 on Linux.
 
 _Matlab_: Our analysis code makes use of open software: Gradient mapping analyses were carried out using BrainSpace (v. 0.1.2;  https://brainspace.readthedocs.io/en/latest/) and surface visualizations were based on code from the ENIGMA Toolbox (v.1.1.3; https://enigma-toolbox.readthedocs.io/en/latest/; 104) in combination with ColorBrewer (v. 1.0.0; https://github.com/scottclowe/cbrewer2). Statistical analyses were carried out using SurfStat (https://www.math.mcgill.ca/keith/surfstat/). Equivolumetric surfaces were computed using code from: https://github.com/MICA-MNI/micaopen/tree/master/a_moment_of_change. Z-tests were performed using the compare correlation coefficients function (Sisi Ma (2024), compare_correlation_coefficients (https://www.mathworks.com/matlabcentral/fileexchange/44658-compare_correlation_coefficients). 
 
