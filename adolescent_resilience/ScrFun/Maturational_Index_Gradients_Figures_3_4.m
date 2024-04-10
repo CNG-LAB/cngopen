@@ -86,9 +86,9 @@ FC = FC(17:end,17:end,:); %exclude subcortical regions (1:16)
 subjects = unique(subj);%295
 baseline_age = nan(numel(subjects),1); %baseline_sex = nan(numel(subjects),1);
 for sub = 1:numel(subjects)%295 loops through subjects,note measurement timepoint!
-    ages = age(strcmp(subj,subjects(sub)));%this goes into 512 subj variable to match age!!
+    ages = age(strcmp(subj,subjects(sub)));%this goes into 512 subj variable to match age
     baseline_age(strcmp(subjects,subjects(sub))) = ages(1);
-    sexes = sex(strcmp(subj,subjects(sub)));%this goes into 512 subj variable to match age!!
+    sexes = sex(strcmp(subj,subjects(sub)));%this goes into 512 subj variable to match age
     baseline_sex(strcmp(subjects,subjects(sub))) = sexes(1);
 end
 baseline_age = baseline_age(subjects_to_use_for_delta);
@@ -264,10 +264,10 @@ if run_group_MIs ==1
 
     clear slm_mpc slm_mpc_model MI_MPC_resilient p_MI_MPC_resilient  MI_MPC_vulnerable p_MI_MPC_vulnerable_perm
 
-    parfor roi = 1:size(MPC_resilience,1) %takes approx 30 mins; with parfor 20 workers: 2-3 min
+    parfor roi = 1:size(MPC_resilience,1) 
         this_roi_mpc = squeeze(MPC_resilience(roi,:,:))';
         this_roi_mpc(:,roi)=[]; %remove nans to fit GLM
-        this_roi_mpc(:,sum(this_roi_mpc)==0) = []; %check if any columns are all zero and remove to fit GLM
+        this_roi_mpc(:,sum(this_roi_mpc)==0) = []; %check if any columns are all zero and remove to fit GLM (should be none)
 
         slm_mpc_model(roi) = SurfStatLinMod(this_roi_mpc, M_resilient);
         slm_mpc(roi) = SurfStatT( slm_mpc_model(roi), age(resilient_indices));
@@ -685,7 +685,6 @@ f_modes_mpc = figure('Position',[400 400 500 500]);
 donut(mode_counts,{'none', '+mpc/+fc','+mpc/-fc','-mpc/+fc','-mpc/-fc'},category_cmap);legend boxoff;legend('Location','eastoutside');axis off
 exportfigbo(f_modes_mpc, [figDir 'donut_mpc_modes.png'],'png',10)
 
-
 %% export table with directions for all significant parcels
 diff = mpc_diff_resilient_vulnerable;
 z = z_mpc_diff_resilient_vulnerable;
@@ -886,74 +885,6 @@ exportfigbo(figure_fc_folded,[figDir 'MI_FC_group_diff_unthresholded.png'],'png'
 figure_fc_thresh = figure; plot_cortical(parcel_to_surface(to_plot_thresh,'glasser_360_conte69'),'color_range',[-0.8 0.8],'surface_name','conte69','label_text','MI FC diff thresholded')
 exportfigbo(figure_fc_thresh,[figDir 'MI_FC_group_diff_combined_thresh_folded.png'],'png',10)
 
-
-%% plot what directions mean
-%{
-% resilient less disruptive
-resilient_less_disruptive = FC_diff_resilient_vulnerable'.* (MI_FC.*p_FC_fdr < 0) .* (FC_diff_resilient_vulnerable>0)' .* fc_group_diff_p_combined';
-to_surf = parcel_to_surface(parcel_330_to_360(resilient_less_disruptive,'zer'),'glasser_360_fsa5');
-plot_this_curv = curv_bin;
-plot_this_curv(to_surf~=0)=to_surf(to_surf~=0);
-
-figure_resilient_less_disruptive = figure; plot_cortical(parcel_to_surface(parcel_330_to_360(resilient_less_disruptive,'zer'),'glasser_360_conte69'),'color_range',[-0.5 0.5],'surface_name','conte69','label_text','MI FC resilient less disruptive')
-exportfigbo(figure_resilient_less_disruptive,[figDir 'MI_FC_resilient_less_disruptive_folded.png'],'png',10)
-
-% resilient less conservative
-resilient_less_conservative = FC_diff_resilient_vulnerable'.* ((MI_FC.*p_FC_fdr) > 0) .* (FC_diff_resilient_vulnerable<0)' .* fc_group_diff_p_combined';
-%folded
-figure_resilient_less_conservative = figure; plot_cortical(parcel_to_surface(parcel_330_to_360(resilient_less_conservative,'zer'),'glasser_360_conte69'),'color_range',[-0.5 0.5],''surface_name','conte69','label_text','MI FC resilient_less_conservative')
-exportfigbo(figure_resilient_less_conservative,[figDir 'MI_FC_resilient_less_conservative_folded.png'],'png',10)
-
-%differences at tipping points
-resilient_tipping_points = FC_diff_resilient_vulnerable'.* (p_FC_fdr == 0) .* (FC_diff_resilient_vulnerable<0)' .* fc_group_diff_p_combined';
-exportfigbo(f_fc_diff,[figDir 'MI_FC_tipping_points_group_diff.png'],'png',10)
-%folded
-figure_resilient_tipping_points = figure; plot_cortical(parcel_to_surface(parcel_330_to_360(resilient_tipping_points,'zer'),'glasser_360_conte69'),'color_range',[-0.5 0.5],'surface_name','conte69','label_text','MI FC resilient_tipping_points')
-exportfigbo(figure_resilient_tipping_points,[figDir 'MI_FC_resilient_tipping_points.png'],'png',10)
-
-%% plot example scatters to show differences
- 
-these_parcels = find(fc_group_diff_p_combined);
-tipping_points = find((p_FC_fdr==0) .* fc_group_diff_p_combined');
-%fc_plot_examples = these_parcels([2 8 30 22]); % these_parcels(2) %resilience more disruptive
-
-selected_fc_parcels = these_parcels;
-f_fc_selected_rois= figure('Position',[400 400 1220 160]);
-for i = 1:numel(selected_fc_parcels)
-    subplot(1,8,i)
-    roi = selected_fc_parcels(i);
-    scatter(FC_baseline_resilient(roi,:),FC_change_resilient(roi,:),2,'filled','MarkerFaceColor',color_positive_delta)
-    hold on
-    scatter(FC_baseline_vulnerable(roi,:),FC_change_vulnerable(roi,:),2,'filled','MarkerFaceColor',color_negative_delta)
-
-    p1 = polyfit(FC_baseline_resilient(roi,:),FC_change_resilient(roi,:), 1); % Linear trendline
-    f1 = polyval(p1, FC_baseline_resilient(roi,:), 1);
-    plot(FC_baseline_resilient(roi,:), f1, 'Color','black', 'LineWidth', 3,'Color',color_positive_delta);hold on
-     p2 = polyfit(FC_baseline_vulnerable(roi,:),FC_change_vulnerable(roi,:), 1); % Linear trendline
-    f2 = polyval(p2, FC_baseline_vulnerable(roi,:), 1);
-    plot(FC_baseline_vulnerable(roi,:), f2, 'Color','black', 'LineWidth', 3,'Color',color_negative_delta);hold on
-    %y_lim = [-0.3 0.3; ]
-    xlim([0 1.2]); xticks([0 1.2]); ylim([-0.04 0.04]); yticks([-0.04 0 0.04])
-    hold on
-    title(nmfc{roi})
-end
-exportfigbo(f_fc_selected_rois,[figDir 'MI_FC_diff_selected_parcels.png'],'png',10)
-
-%% yeo boxplots
-
-f_categ = figure('Position',[400 400 250 250]);
-%exclude midbrain-boundary-parcels for plot
-plot_fc_box = FC_diff_resilient_vulnerable;
-plot_fc_box(yeo_included==0)=[];
-yeo_box = yeo_included;yeo_box(yeo_included==0)=[];
-h = boxplot(plot_fc_box,yeo_box,'Colors', yeo_cmap, 'Widths', 0.7,'Symbol','');set(h, 'LineWidth', 2);box off; yticks([-0.75 0 0.75]);ylim([-0.75 0.75]);xticks([])
-hold on
-for net = 1:7
-    scatter((net-1) + ones(size(find(yeo_box==net))).*(1+(rand(size(find(yeo_box==net)))-0.5)/2),plot_fc_box(yeo_box==net)',7,yeo_cmap(net,:),'filled')
-    hold on
-end
-exportfigbo(f_categ,'/data/pt_02792/ResilienceHubs/Figures/MaturationalIndex/MI_group_diff_yeo.png','png',10)
-%}
 %% Donuts
 %FC
 fc_categ = [sum(fc_group_diff_p_combined(directions==0)) sum(fc_group_diff_p_combined(directions==1)) sum(fc_group_diff_p_combined(directions==2)) sum(fc_group_diff_p_combined(directions==3)) sum(fc_group_diff_p_combined(directions==4))];
@@ -977,11 +908,9 @@ f_category_donut = figure('Position',[400 400 500 500]);
 donut(fc_categ, {'none','+mpc/+fc','+mpc/-fc','-mpc/+fc','-mpc/-fc'},category_cmap);legend boxoff;legend('Location','eastoutside');xticks([]);yticks([]);axis off
 exportfigbo(f_category_donut, [figDir 'donut_fc_categories.png'],'png',10)
 
-
 %% %%%%%%%%%%%%%%% %%
 %%    gradients    %%
 %% %%%%%%%%%%%%%%% %%
-
 
 if compute_gradients == 1
     %mean grad to allign everyone to
@@ -1128,9 +1057,7 @@ figure; plot_cortical(parcel_to_surface(diff_int.*z_diff_int_p_fdr,'glasser_360_
 figure; plot_cortical(parcel_to_surface(diff_int,'glasser_360_conte69'),'surface_name','conte69','color_range',[-0.8 0.8],'label_text','interaction model')
 figure; plot_cortical(parcel_to_surface(diff_int,'glasser_360_conte69'),'surface_name','conte69','color_range',[-0.8 0.8],'label_text','original model')
 
-%correlate this with map in main manuscriot = 0.966
-% plot similarity
-% Sample data
+%correlate this with map in main manuscript = 0.966
 
 % Scatter plot
 f_int = figure('Position',[200 200 280 280]);
@@ -1232,10 +1159,6 @@ fc_diff_resilient_vulnerable = MI_FC_resilient - MI_FC_vulnerable;
 figure_int = figure; plot_cortical(parcel_to_surface(parcel_330_to_360(diff_int_fc,'zer'),'glasser_360_conte69'),'surface_name','conte69','color_range',[-0.8 0.8],'label_text','interaction model')
 figure_orig = figure; plot_cortical(parcel_to_surface(parcel_330_to_360(fc_diff_resilient_vulnerable,'zer'),'glasser_360_conte69'),'surface_name','conte69','color_range',[-0.8 0.8],'label_text','original model')
 
-%correlate this with map in main manuscript
-% plot similarity
-% Sample data
-
 % Scatter plot
 f_int = figure('Position',[200 200 280 280]);
 scatter(fc_diff_resilient_vulnerable, diff_int_fc, 10, 'MarkerFaceColor', [0.7, 0.7, 0.7], 'MarkerEdgeColor', [0.7, 0.7, 0.7]);
@@ -1277,8 +1200,6 @@ hold on;
 plot(x_fit, y_fit, 'k-', 'LineWidth', 2);
 xlim([-1.2 1.2]);ylim([-1.2 1.2])
 xticks([-1 0 1]);yticks([-1 0 1])
-
-% Label and legend
 xlabel('MI Spearman');
 ylabel('MI Pearson');
 exportfigbo(f_pear,[figDir 'pearson_MI_diff_scatter_fc.png'],'png',10)
