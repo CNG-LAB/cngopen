@@ -1,4 +1,4 @@
-%% Longitudinal trajectories of resilient psychosocial functioning link to 
+%% Longitudinal variation in resilient psychosocial functioning link to 
 %% ongoing cortical myelination and functional reorganization during adolescence
 % This script generates results presented in Figure 2 of the manuscript. It
 % links longitudinal change in resilience scores to longitudinal
@@ -80,7 +80,9 @@ mt_baseline_mean = nan(360,length(subjects));
 
 %% 1. compute deltas (i.e. simple T2 - T1)
 % imaging
+% For MT: mean across intracortical surfaces
 MTmean = squeeze(mean(MT,1));
+% For FC: extract cortical parcels
 FC = FC(17:end, 17:end,:);
 
 for sub = 1:numel(subjects) %loop through 141 subjects
@@ -123,18 +125,15 @@ end
 
 
 %% 2. regress out time point difference
+
 % a) for MT
 clear slm
 M1    = 1 + term(age_delta_mri);
 slm  = SurfStatLinMod(mt_delta_mean',M1);
 mt_delta_mean_agecorr = (mt_delta_mean' - (slm.X*slm.coef))';
 
-%group_avg_mt_delta = mean(MTmean_agecorr,2);
-%figure;plot_cortical(parcel_to_surface(group_avg_mt_delta,'glasser_360_conte69'),'surface_name','conte69','label_text','Delta Mean MT corrected','color_range',[min(group_avg_mt_delta),(min(group_avg_mt_delta))*-1])
-
 % b) for MT layers
 mt_delta_layers_agecorr = nan(size(mt_delta_layers,1),size(mt_delta_layers,2),size(mt_delta_layers,3));
-
 for i = 1:size(mt_delta_layers,1) %10 layers
 
     this_layer = squeeze(mt_delta_layers(i,:,:))';
@@ -206,7 +205,7 @@ delta_table = [array2table(subjects,'VariableNames',{'subjects'}),...
     array2table(delta_resilience_score,'VariableNames',{'delta_resilience_score'}),...
     array2table(mean_resilience_score,'VariableNames',{'mean_resilience_score'})];
 
-%% St up GLM res vs MRI
+%% St up GLM delta resilience vs delta MT
 Age = delta_table.mean_age; Age = term(Age);
 Sex = delta_table.sex; Sex = term(Sex);
 Site = delta_table.site; Site = term(Site);
@@ -246,7 +245,9 @@ exportfigbo(f,[figDir, 'Delta_Resilience_Delta_MT_10000perm05.png'],'png', 12)
 f = figure;meike_plot_cortical(parcel_to_surface(mt_res_effect','glasser_360_conte69'),'surface_name',...
     'conte69','cmap_custom',cmap_resilience,'label_text','Delta Resilience * Delta Mean MT','color_range',[0,4])
 exportfigbo(f,[figDir, 'Delta_Resilience_Delta_MT_unthresholded.png'],'png', 12)
-%% contextualize MT results
+
+%% contextualize MT results %%
+
 %% Figure 2Aii) layer-specific effects within significant parcels
 sig_mt_rois = find(p_perm_fdr);
 layer_effect = nan(10,numel(sig_mt_rois)); layer_effectp = nan(10,numel(sig_mt_rois));
@@ -291,14 +292,13 @@ yeo_included = yeo_glasser(included_parcels);
 
 % yeo_cmap_surface_masked = yeo_cmap_surface;
 % yeo_cmap_surface_masked(9,:) = [0,0,0];
-%% Figure 2C - seed based FC effect
 
 clear slm
 slm = SurfStatLinMod(delta_mt_fc', M_main_delta);
 slm = SurfStatT( slm, delta_resilience_score);
 seed_effect = slm.t;
 
-%permutation
+% non-parametric permutation test 
 fc_res_effect_perm = nan(330,10000);
 for perm = 1:10000
     permuted_delta_resilience = delta_table.delta_resilience_score(perm_idx(:,perm));
@@ -316,11 +316,11 @@ end
 
 seed_fdr = get_perm_fdr_p(seed_effect,fc_res_effect_perm,330);
 
-%prepare data to plot (project to 360)
+% prepare data to plot (project to 360)
 to_plot = parcel_330_to_360(seed_effect.*seed_fdr','zer');
 % add PFC mask
 to_plot(logical(p_perm_fdr))=6;
-%add mask for excluded parcels (due to low SNR)
+% add mask for excluded parcels (due to low SNR)
 to_plot(not_included_parcels) = -6;
 
 cmap_seeds = [repmat([0.5 0.5 0.5],256,1); cmap_resilience;[0.2 0.2 0.2]/256];
@@ -333,10 +333,9 @@ exportfigbo(f_seed_masked, [figDir 'seed_based_delta_fc_resilience_masked_agains
 labels_yeo_adj = strrep(labels_yeo, ' ', '');
 
 f_violin_decoding_yeo = figure('Position',[400 400 380 250]);
-
 min_sig = min(seed_effect(logical(seed_fdr))); %add signiicance threshold to the plot
 plot([0 7],[min_sig min_sig],'Color','black');hold on
-for net = [1,2,3,4,6,7]%exclude limbic as limbic contains mostly missing parcels /low SNR
+for net = [1,2,3,4,6,7]%exclude limbic (5) as limbic contains mostly missing parcels /low SNR
     fc_plot_this.(labels_yeo_adj{net}) = seed_effect(yeo_included==net);
 end
 violinplot(fc_plot_this,fliplr(labels_yeo_adj([1:4,6:7])),'GroupOrder',fliplr(labels_yeo_adj([1:4,6:7])),'ViolinColor',flipud(yeo_cmap([1:4,6:7],:)),'MarkerSize',10); box off; ylim([0 5]); %'MedianColor',[0 0 0],
