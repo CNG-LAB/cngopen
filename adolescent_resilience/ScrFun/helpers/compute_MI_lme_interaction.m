@@ -1,12 +1,5 @@
 function [MI, p_MI] = compute_MI_lme_interaction(data, demographics_tbl, contrast)
 
-% data = MPC_interaction;
-% demographics_tbl =  demo_tbl_interaction;
-% contrast = 'Resilience_vulnerable'
-% %  example input
-% data = FC(:,:,logical(sum(group_indices(:,1:2),2)));
-% demographics_tbl = demo_resilience_vs_vulnerable;
-% contrast = 'Resilience_vulnerable'
 for roi = 1:size(data,1)
     % Extract data for this ROI
     this_roi = squeeze(data(roi,:,:))';
