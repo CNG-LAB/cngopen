@@ -6,8 +6,15 @@ preprinted: https://doi.org/10.1101/2024.02.01.578366
 
 ![img](https://github.com/CNG-LAB/cngopen/blob/main/thalamic_gradients/thala_gradients.png) 
 
+## **Data**
+Our Project is based on the MICA-MICs dataset (Royer et al., 2022), which can be downloaded from: https://portal.conp.ca/dataset?id=projects/mica-mics
+
 ## **Scripts** 
-The repo includes code for analysis and plotting. 
+The repo includes code for preprocessing, analysis and plotting. 
+
+### Preprocessing and Tractography
+
+
 
 ### 1.  Thalamocortical Structural Connectivity Gradients.
 
