@@ -13,9 +13,7 @@ main question: we have differences in our structural covariance patterns between
 """
 #import modules
 import numpy as np
-import matplotlib.pyplot as plt
 import nibabel as nb
-import pandas as pd
 
 sublist=np.arange(1,51,1)  
 """
@@ -23,7 +21,7 @@ sublist=np.arange(1,51,1)
 """
 
 ### left thalamus -> whole brain
-thala_ref_lh=nb.load("/data/p_02666/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz").get_fdata()
+thala_ref_lh=nb.load("/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz").get_fdata()
 nr_v=np.count_nonzero(thala_ref_lh)
 allsub_T1q_l=np.zeros((nr_v,50)) 
 idx_l=np.where(thala_ref_lh==1)
@@ -32,7 +30,7 @@ idx_l=np.where(thala_ref_lh==1)
 for s,sub in enumerate(sublist):
     print(sub)
     #load in mprage_T1map -> 2mm 1mm?
-    T1q=nb.load("/data/p_02666/mica-mics/space_mp2rage_T1map_to_MNI/SUB_HC0{:02d}/fnirt_mp2rage_T1map_to_MNI2mm.nii.gz".format(sub)).get_fdata()
+    T1q=nb.load("/mica-mics/space_mp2rage_T1map_to_MNI/SUB_HC0{:02d}/fnirt_mp2rage_T1map_to_MNI2mm.nii.gz".format(sub)).get_fdata()
     values=T1q[idx_l]     #returns all values at location where thalamus mask is 1
     allsub_T1q_l[:,s]=values 
     
@@ -40,7 +38,7 @@ for s,sub in enumerate(sublist):
 ###correlate voxelwise####
 
 #correlate between gradient T1q voxels and schaefer parcels  -> per layer
-intensity_profiles=np.load("/data/p_02666/Project1_thalamus/structural_covariance/cortex_intensity_profiles/intensity_profiles_mean_schaefer200_allsub.npy")
+intensity_profiles=np.load("/Project1_thalamus_gradients/data/structural_covariance/cortex_intensity_profiles/intensity_profiles_mean_schaefer200_allsub.npy")
 parcels=np.arange(0,200,1)  #both hemisphere
     
 #corr_coefficients -> retunrs Rvalues (Pearson)
@@ -56,7 +54,7 @@ for v, vox in enumerate(vox_nr):
             
 #->scov
 #load gradient vector
-grad=np.load("/data/p_02666/Project1_thalamus/structural_connectivity/parcels_200/gradients_lh.npy")
+grad=np.load("/Project1_thalamus_gradients/data/structural_connectivity/parcels_200/gradients_lh.npy")
 # 1. Gradient
 R_values=np.zeros((200,1))
 
@@ -66,7 +64,7 @@ for p,parc in enumerate(parcels):
     #collect R values per parcel
     R_values[p]=R
 
-np.save("/data/p_02666/Project1_thalamus/structural_covariance/QC/R_values_left_th_whole_cortex_g1.npy", R_values)
+np.save("/Project1_thalamus_gradients/data/structural_covariance/QC/R_values_left_th_whole_cortex_g1.npy", R_values)
 
 # 2. Gradient
 R_values=np.zeros((200,1))
@@ -77,11 +75,11 @@ for p,parc in enumerate(parcels):
     #collect R values per parcel
     R_values[p]=R
 
-np.save("/data/p_02666/Project1_thalamus/structural_covariance/QC/R_values_left_th_whole_cortex_g2.npy", R_values)
+np.save("/Project1_thalamus_gradients/data/structural_covariance/QC/R_values_left_th_whole_cortex_g2.npy", R_values)
 
 #####################################################################
 ### right thalamus -> whole brain
-thala_ref_rh=nb.load("/data/p_02666/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_rh_refined.nii.gz").get_fdata()
+thala_ref_rh=nb.load("/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_rh_refined.nii.gz").get_fdata()
 nr_v=np.count_nonzero(thala_ref_rh)
 allsub_T1q=np.zeros((nr_v,50)) 
 idx_r=np.where(thala_ref_rh==1)
@@ -90,14 +88,14 @@ idx_r=np.where(thala_ref_rh==1)
 for s,sub in enumerate(sublist):
     print(sub)
     #load in mprage_T1map -> 2mm 1mm?
-    T1q=nb.load("/data/p_02666/mica-mics/space_mp2rage_T1map_to_MNI/SUB_HC0{:02d}/fnirt_mp2rage_T1map_to_MNI2mm.nii.gz".format(sub)).get_fdata()
+    T1q=nb.load("/mica-mics/space_mp2rage_T1map_to_MNI/SUB_HC0{:02d}/fnirt_mp2rage_T1map_to_MNI2mm.nii.gz".format(sub)).get_fdata()
     values=T1q[idx_r]     #returns all values at location where thalamus mask is 1
     allsub_T1q[:,s]=values 
 
 ###correlate voxelwise####
 
 #correlate between gradient T1q voxels and schaefer parcels  -> per layer
-intensity_profiles=np.load("/data/p_02666/Project1_thalamus/structural_covariance/cortex_intensity_profiles/intensity_profiles_mean_schaefer200_allsub.npy")
+intensity_profiles=np.load("/Project1_thalamus_gradients/data/structural_covariance/cortex_intensity_profiles/intensity_profiles_mean_schaefer200_allsub.npy")
 parcels=np.arange(0,200,1)  #left hemisphere
     
 #corr_coefficients -> retunrs Rvalues (Pearson)
@@ -114,7 +112,7 @@ for v, vox in enumerate(vox_nr):
 #->scov
 
 #load gradient vector
-grad=np.load("/data/p_02666/Project1_thalamus/structural_connectivity/parcels_200/gradients_rh.npy")
+grad=np.load("/Project1_thalamus_gradients/data/structural_connectivity/parcels_200/gradients_rh.npy")
 # 1. Gradient
 R_values=np.zeros((200,1))
 
@@ -124,7 +122,7 @@ for p,parc in enumerate(parcels):
     #collect R values per parcel
     R_values[p]=R       
 
-np.save("/data/p_02666/Project1_thalamus/structural_covariance/QC/R_values_right_th_whole_cortex_g1.npy", R_values)
+np.save("/Project1_thalamus_gradients/data/structural_covariance/QC/R_values_right_th_whole_cortex_g1.npy", R_values)
 
 # 2. Gradient
 R_values=np.zeros((200,1))
@@ -135,9 +133,7 @@ for p,parc in enumerate(parcels):
     #collect R values per parcel
     R_values[p]=R       
 
-np.save("/data/p_02666/Project1_thalamus/structural_covariance/QC/R_values_right_th_whole_cortex_g2.npy", R_values)
-
-# also liegt rechts mit links besser als rechts mit rechts 
+np.save("/Project1_thalamus_gradients/data/structural_covariance/QC/R_values_right_th_whole_cortex_g2.npy", R_values)
 
 
 
