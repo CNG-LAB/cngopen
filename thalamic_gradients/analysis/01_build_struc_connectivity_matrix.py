@@ -21,20 +21,20 @@ import nibabel as nb
 """ left hemisphere """
 
 sublist=np.arange(1,51,1) #subject list
-schaefer_parcels_lh=np.arange(1,101,1)                  # left hemisphere
+schaefer_parcels_lh=np.arange(1,101,1) # left hemisphere
 
 # paths to save results
-save_to="/data/p_02666/Project1_thalamus/structural_connectivity/parcels_200/struc_conn_matrix_lh_sub.npy"
-avg_save_to="/data/p_02666/Project1_thalamus/structural_connectivity/parcels_200/struc_conn_matrix_lh_avg.npy"
+save_to="/Project1_thalamus_gradients/structural_connectivity/parcels_200/struc_conn_matrix_lh_sub.npy"
+avg_save_to="/Project1_thalamus_gradients/structural_connectivity/parcels_200/struc_conn_matrix_lh_avg.npy"
 
 # import refined thalamus mask as reference
-thala_ref_lh_path="/data/p_02666/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz"
+thala_ref_lh_path="/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz"
 thala_ref_lh=nb.load(thala_ref_lh_path).get_fdata()
 
 # collect indices of voxels where mask = 1 
 idx_l=np.where(thala_ref_lh==1)        
 #counts number of voxels in thalamic_mask              
-vox_lh=np.count_nonzero(thala_ref_lh)                   # 1068 voxels
+vox_lh=np.count_nonzero(thala_ref_lh) # 1068 voxels
 
 # create array to stack connectivity matrices of all subjects
 conn_matrix_stack=np.zeros((vox_lh,100,50))    
@@ -45,7 +45,7 @@ for s, sub in enumerate(sublist):
     print("sub_HC0{:02d}".format(sub))
     # iterate over each output file (one nifti per parcel) 
     for i, parcel in enumerate(schaefer_parcels_lh): 
-        path="/data/p_02666/mica-mics/probtrackx_out/sub_HC0{:02d}/ses-01/dwi/left_hem/seeds_to_space-MNI_atlas-schaefer-200_parcel_{}.nii.gz".format(sub,parcel)
+        path="/mica-mics/probtrackx_out/sub_HC0{:02d}/ses-01/dwi/left_hem/seeds_to_space-MNI_atlas-schaefer-200_parcel_{}.nii.gz".format(sub,parcel)
         thala_to_parcel=nb.load(path).get_fdata()       # load output file as array
         values=thala_to_parcel[idx_l]                   # returns all values at location where thalamus mask = 1
         conn_matrix_stack[:,i,s]=values                 # puts the values as colum inside array, stack subjects
@@ -67,20 +67,20 @@ np.save(avg_save_to, conn_matrix_l)
 """ right hemisphere """
 
 sublist=np.arange(1,51,1) #subject list
-schaefer_parcels_rh=np.arange(101,201,1)               # right hemisphere
+schaefer_parcels_rh=np.arange(101,201,1)   # right hemisphere
 
 # paths to save results
-save_to="/data/p_02666/Project1_thalamus/structural_connectivity/parcels_200/struc_conn_matrix_rh_sub.npy"
-avg_save_to="/data/p_02666/Project1_thalamus/structural_connectivity/parcels_200/struc_conn_matrix_rh_avg.npy"
+save_to="/Project1_thalamus_gradients/structural_connectivity/parcels_200/struc_conn_matrix_rh_sub.npy"
+avg_save_to="/Project1_thalamus_gradients/structural_connectivity/parcels_200/struc_conn_matrix_rh_avg.npy"
 
 # import refined thalamus mask as reference
-thala_ref_rh_path="/data/p_02666/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_rh_refined.nii.gz"
+thala_ref_rh_path="/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_rh_refined.nii.gz"
 thala_ref_rh=nb.load(thala_ref_rh_path).get_fdata()
 
 # collect indices of voxels where mask = 1 
 idx_r=np.where(thala_ref_rh==1)        
 #counts number of voxels in thalamic_mask              
-vox_rh=np.count_nonzero(thala_ref_rh)                 # 1029 voxels
+vox_rh=np.count_nonzero(thala_ref_rh)  # 1029 voxels
 
 # create array to stack connectivity matrices of all subjects
 conn_matrix_stack=np.zeros((vox_rh,100,50))    
@@ -91,7 +91,7 @@ for s, sub in enumerate(sublist):
     print("sub_HC0{:02d}".format(sub))
     # iterate over each output file (one nifti per parcel) 
     for i, parcel in enumerate(schaefer_parcels_rh): 
-        path="/data/p_02666/mica-mics/probtrackx_out/sub_HC0{:02d}/ses-01/dwi/right_hem/seeds_to_space-MNI_atlas-schaefer-200_parcel_{}.nii.gz".format(sub,parcel)
+        path="/mica-mics/probtrackx_out/sub_HC0{:02d}/ses-01/dwi/right_hem/seeds_to_space-MNI_atlas-schaefer-200_parcel_{}.nii.gz".format(sub,parcel)
         thala_to_parcel=nb.load(path).get_fdata()       # load output file as array
         values=thala_to_parcel[idx_r]                   # returns all values at location where thalamus mask = 1
         conn_matrix_stack[:,i,s]=values                 # puts the values as colum inside array, stack subjects
