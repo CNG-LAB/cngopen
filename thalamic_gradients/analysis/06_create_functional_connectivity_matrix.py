@@ -26,11 +26,8 @@ schaefer_ts_stack = np.zeros((50,695,200))
 
 #1. import timeseries schaefer parcellation 
 for s,sub in enumerate(sublist):
-    schaefer = np.loadtxt("/data/p_02542/conp-dataset/projects/mica-mics/MICs_release/derivatives/micapipe/sub-HC0{:02d}/ses-01/func/sub-HC0{:02d}_ses-01_space-fsnative_atlas-schaefer200_desc-timeseries.txt".format(sub,sub),delimiter=",")
+    schaefer = np.loadtxt("/mica-mics/derivatives/micapipe/sub-HC0{:02d}/ses-01/func/sub-HC0{:02d}_ses-01_space-fsnative_atlas-schaefer200_desc-timeseries.txt".format(sub,sub),delimiter=",")
     print(schaefer.shape)
-    #n the fsnative matrix you need to use the last 202 entries for cortex, which are organized as follows:
-        #left medial wall (1) - left cortical parcels (100) - right medial wall (1) - right cortical parcels (100)
-        #the first entries are for subcortex (14) and cerebellum (28 if I recall correctly)
 
     #remove subcortex and MW
     columns_to_delete=[i for i in range(14)]+[14,115]   #0..13 is subcortex, 14 left MW, 115 right MW
@@ -50,14 +47,14 @@ thalamus_ts_l_stack=np.zeros((50,1068,695))
 thalamus_ts_r_stack=np.zeros((50,1029,695))
 
 #import refined thalamus mask 
-thalamus_ref_lh=nb.load("/data/p_02666/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz").get_fdata()
-thalamus_ref_rh=nb.load("/data/p_02666/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_rh_refined.nii.gz").get_fdata()
+thalamus_ref_lh=nb.load("/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz").get_fdata()
+thalamus_ref_rh=nb.load("/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_rh_refined.nii.gz").get_fdata()
 
 
 for s,sub in enumerate(sublist):
     print(sub)
     #import preprocessed warped ts
-    brain_ts=nb.load("/data/p_02666/mica-mics/singularity_out_proc_rsfmri_fromjessica/ants_output_to_mni/sub-HC0{:02d}_ses-01_singleecho_clean_in_MNI.nii.gz".format(sub)).get_fdata()
+    brain_ts=nb.load("/mica-mics/singularity_out_proc_rsfmri_fromjessica/ants_output_to_mni/sub-HC0{:02d}_ses-01_singleecho_clean_in_MNI.nii.gz".format(sub)).get_fdata()
     #get timeseries from thalamus voxels
     thalamus_ts_l=brain_ts[thalamus_ref_lh==1]    #left
     if thalamus_ts_l.shape[0]>695:
@@ -69,8 +66,8 @@ for s,sub in enumerate(sublist):
     thalamus_ts_l_stack[s,:,:] =thalamus_ts_l          # left
     thalamus_ts_r_stack[s,:,:] =thalamus_ts_r          # right
 
-np.save("/data/p_02666/Project1_thalamus/functional_connectivity/thalamus_timeseries_l_stack.npy", thalamus_ts_l_stack)    
-np.save("/data/p_02666/Project1_thalamus/functional_connectivity/thalamus_timeseries_r_stack.npy", thalamus_ts_r_stack)  
+np.save("/Project1_thalamus_gradients/functional_connectivity/thalamus_timeseries_l_stack.npy", thalamus_ts_l_stack)    
+np.save("/Project1_thalamus_gradients/functional_connectivity/thalamus_timeseries_r_stack.npy", thalamus_ts_r_stack)  
 
 #3. correlate thalamus voxel ts with schaefer parcel ts
 #left
@@ -90,7 +87,7 @@ for s,sub in enumerate(sublist):
     for v in range(1068):
        fc_l_stack[s,v,:]=np.arctanh(fc_l_stack[s,v,:])
     
-np.save("/data/p_02666/Project1_thalamus/functional_connectivity/fc_l_stack.npy" ,fc_l_stack)
+np.save("/Project1_thalamus_gradients/functional_connectivity/fc_l_stack.npy" ,fc_l_stack)
 
 #right
 fc_r_stack=np.zeros((50,1029,100))
@@ -110,11 +107,11 @@ for s,sub in enumerate(sublist):
     for v in range(1029):
        fc_r_stack[s,v,:]=np.arctanh(fc_r_stack[s,v,:])
 
-np.save("/data/p_02666/Project1_thalamus/functional_connectivity/fc_r_stack.npy" ,fc_r_stack)
+np.save("/Project1_thalamus_gradients/functional_connectivity/fc_r_stack.npy" ,fc_r_stack)
 
 #4. compute grouplevel fc matrices
 fc_l= np.mean(fc_l_stack, axis=0)
-np.save("/data/p_02666/Project1_thalamus/functional_connectivity/fc_l.npy" ,fc_l)
+np.save("/Project1_thalamus_gradients/functional_connectivity/fc_l.npy" ,fc_l)
 
 fc_r= np.mean(fc_r_stack, axis=0)
-np.save("/data/p_02666/Project1_thalamus/functional_connectivity/fc_r.npy" ,fc_r)
+np.save("/Project1_thalamus_gradients/functional_connectivity/fc_r.npy" ,fc_r)
