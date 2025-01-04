@@ -65,13 +65,11 @@ The repo includes code for preprocessing, analysis and plotting.
 - `09_Supp_groundtruth.py` - Supplementary, mean projection of sc, fc, and scov of thomas nucleus (AV, VLP, MD) on surface
 - `Supp_thomas_nuclei_projection/sc_thomas nuclei.ipynb` - plotting
 
-## **Data**
-- MICA-MICs dataset (Royer et al., 2022)
-- The data used in for this study can be downloaded from: https://portal.conp.ca/dataset?id=projects/mica-mics
 
 ## **Dependencies**
 
 `conda_env` contains the environment.yml files to recreate the conda environments
+
 
 Key dependencies are 
 - [Brainspace v. 0.1.3](https://brainspace.readthedocs.io/en/latest/index.html)
