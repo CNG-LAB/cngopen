@@ -24,8 +24,8 @@ sublist=np.arange(1,51,1) #subject list
 schaefer_parcels_lh=np.arange(1,101,1) # left hemisphere
 
 # paths to save results
-save_to="/Project1_thalamus_gradients/structural_connectivity/parcels_200/struc_conn_matrix_lh_sub.npy"
-avg_save_to="/Project1_thalamus_gradients/structural_connectivity/parcels_200/struc_conn_matrix_lh_avg.npy"
+save_to="/Project1_thalamus_gradients/data/structural_connectivity/parcels_200/struc_conn_matrix_lh_sub.npy"
+avg_save_to="/Project1_thalamus_gradients/data/structural_connectivity/parcels_200/struc_conn_matrix_lh_avg.npy"
 
 # import refined thalamus mask as reference
 thala_ref_lh_path="/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz"
@@ -70,8 +70,8 @@ sublist=np.arange(1,51,1) #subject list
 schaefer_parcels_rh=np.arange(101,201,1)   # right hemisphere
 
 # paths to save results
-save_to="/Project1_thalamus_gradients/structural_connectivity/parcels_200/struc_conn_matrix_rh_sub.npy"
-avg_save_to="/Project1_thalamus_gradients/structural_connectivity/parcels_200/struc_conn_matrix_rh_avg.npy"
+save_to="/Project1_thalamus_gradients/data/structural_connectivity/parcels_200/struc_conn_matrix_rh_sub.npy"
+avg_save_to="/Project1_thalamus_gradients/data/structural_connectivity/parcels_200/struc_conn_matrix_rh_avg.npy"
 
 # import refined thalamus mask as reference
 thala_ref_rh_path="/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_rh_refined.nii.gz"

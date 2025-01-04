@@ -66,8 +66,8 @@ for s,sub in enumerate(sublist):
     thalamus_ts_l_stack[s,:,:] =thalamus_ts_l          # left
     thalamus_ts_r_stack[s,:,:] =thalamus_ts_r          # right
 
-np.save("/Project1_thalamus_gradients/functional_connectivity/thalamus_timeseries_l_stack.npy", thalamus_ts_l_stack)    
-np.save("/Project1_thalamus_gradients/functional_connectivity/thalamus_timeseries_r_stack.npy", thalamus_ts_r_stack)  
+np.save("/Project1_thalamus_gradients/data/functional_connectivity/thalamus_timeseries_l_stack.npy", thalamus_ts_l_stack)    
+np.save("/Project1_thalamus_gradients/data/functional_connectivity/thalamus_timeseries_r_stack.npy", thalamus_ts_r_stack)  
 
 #3. correlate thalamus voxel ts with schaefer parcel ts
 #left
@@ -87,7 +87,7 @@ for s,sub in enumerate(sublist):
     for v in range(1068):
        fc_l_stack[s,v,:]=np.arctanh(fc_l_stack[s,v,:])
     
-np.save("/Project1_thalamus_gradients/functional_connectivity/fc_l_stack.npy" ,fc_l_stack)
+np.save("/Project1_thalamus_gradients/data/functional_connectivity/fc_l_stack.npy" ,fc_l_stack)
 
 #right
 fc_r_stack=np.zeros((50,1029,100))
@@ -107,11 +107,11 @@ for s,sub in enumerate(sublist):
     for v in range(1029):
        fc_r_stack[s,v,:]=np.arctanh(fc_r_stack[s,v,:])
 
-np.save("/Project1_thalamus_gradients/functional_connectivity/fc_r_stack.npy" ,fc_r_stack)
+np.save("/Project1_thalamus_gradients/data/functional_connectivity/fc_r_stack.npy" ,fc_r_stack)
 
 #4. compute grouplevel fc matrices
 fc_l= np.mean(fc_l_stack, axis=0)
-np.save("/Project1_thalamus_gradients/functional_connectivity/fc_l.npy" ,fc_l)
+np.save("/Project1_thalamus_gradients/data/functional_connectivity/fc_l.npy" ,fc_l)
 
 fc_r= np.mean(fc_r_stack, axis=0)
-np.save("/Project1_thalamus_gradients/functional_connectivity/fc_r.npy" ,fc_r)
+np.save("/Project1_thalamus_gradients/data/functional_connectivity/fc_r.npy" ,fc_r)

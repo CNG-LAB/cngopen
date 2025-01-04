@@ -30,10 +30,10 @@ for s, sub in enumerate(sub_list):
 allsub_int_profiles=np.delete(allsub_int_profiles, (0,13), axis=0)
 allsub_int_profiles=np.delete(allsub_int_profiles, (0,101), axis=1)  # shape (12,200,50)
 
-np.save("/Project1_thalamus_gradients/structural_covariance/cortex_intensity_profiles/intensity_profiles_schaefer200_allsub.npy", allsub_int_profiles)
+np.save("/Project1_thalamus_gradients/data/structural_covariance/cortex_intensity_profiles/intensity_profiles_schaefer200_allsub.npy", allsub_int_profiles)
 
 
 # build mean across layers
 mean_int=np.mean(allsub_int_profiles, axis=0)
 
-np.save("/Project1_thalamus_gradients/structural_covariance/cortex_intensity_profiles/intensity_profiles_mean_schaefer200_allsub.npy",mean_int)
+np.save("/Project1_thalamus_gradients/data/structural_covariance/cortex_intensity_profiles/intensity_profiles_mean_schaefer200_allsub.npy",mean_int)

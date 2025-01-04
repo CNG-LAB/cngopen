@@ -28,9 +28,9 @@ T1q_mean=np.mean(T1q_stack, axis=3)
 T1q=T1q_mean[idx_l] 
 
 #save as txt
-np.save("/Project1_thalamus_gradients/structural_covariance/subjectlevel_T1q_values_lh.npy",T1q_stack)
+np.save("/Project1_thalamus_gradients/data/structural_covariance/subjectlevel_T1q_values_lh.npy",T1q_stack)
 
-np.savetxt("/Project1_thalamus_gradients/structural_covariance/grouplevel_T1q_values_lh.txt",T1q, delimiter=' ')
+np.savetxt("/Project1_thalamus_gradients/data/structural_covariance/grouplevel_T1q_values_lh.txt",T1q, delimiter=' ')
 
 #save as nifti
 image_tmp=np.zeros(thala_ref_lh.shape)          # create empty image same size as thalamus mask
@@ -43,7 +43,7 @@ for i, idx in enumerate(idx_l):
 thala_ref_lh=nb.load("/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz")
 clipped_img = nb.Nifti1Image(image_tmp, thala_ref_lh.affine, thala_ref_lh.header)
     
-nb.save(clipped_img, '/Project1_thalamus_gradients/structural_covariance/grouplevel_T1q_map_lh.nii.gz')
+nb.save(clipped_img, '/Project1_thalamus_gradients/data/structural_covariance/grouplevel_T1q_map_lh.nii.gz')
 
 
 ### right hemispherre
@@ -61,9 +61,9 @@ for s,sub in enumerate(sublist):
 T1q_mean=np.mean(T1q_stack, axis=3)
 T1q=T1q_mean[idx_r] 
 
-np.save("/Project1_thalamus_gradients/structural_covariance/subjectlevel_T1q_values_rh.npy",T1q_stack)
+np.save("/Project1_thalamus_gradients/data/structural_covariance/subjectlevel_T1q_values_rh.npy",T1q_stack)
 #save as txt
-np.savetxt("/Project1_thalamus_gradients/structural_covariance/grouplevel_T1q_values_rh.txt",T1q, delimiter=' ')
+np.savetxt("/Project1_thalamus_gradients/data/structural_covariance/grouplevel_T1q_values_rh.txt",T1q, delimiter=' ')
 
 #save as nifti
 image_tmp=np.zeros(thala_ref_rh.shape)          # create empty image same size as thalamus mask
@@ -76,7 +76,7 @@ for i, idx in enumerate(idx_r):
 thala_ref_rh=nb.load("/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_rh_refined.nii.gz")
 clipped_img = nb.Nifti1Image(image_tmp, thala_ref_rh.affine, thala_ref_rh.header)
     
-nb.save(clipped_img, '/Project1_thalamus_gradients/structural_covariance/grouplevel_T1q_map_rh.nii.gz')
+nb.save(clipped_img, '/Project1_thalamus_gradients/data/structural_covariance/grouplevel_T1q_map_rh.nii.gz')
 
 
 
@@ -104,4 +104,4 @@ for i, idx in enumerate(idx_l):
 # save as nifti, with same header informations as thalamus mask
 thala_ref_lh=nb.load("/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz")
 clipped_img = nb.Nifti1Image(image_tmp, thala_ref_lh.affine, thala_ref_lh.header)
-nb.save(clipped_img, '/Project1_thalamus_gradients/structural_covariance/T1q_map_lh_sub01.nii.gz')
+nb.save(clipped_img, '/Project1_thalamus_gradients/data/structural_covariance/T1q_map_lh_sub01.nii.gz')

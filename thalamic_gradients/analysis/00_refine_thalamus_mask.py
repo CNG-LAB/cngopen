@@ -27,7 +27,7 @@ for i, idx in enumerate(idx_l):
 # save refined mask as nifti    
 img=nb.load("/mica-mics/space_mp2rage_T1map_to_MNI/SUB_HC001/fnirt_uni_T1map_to_MNI2mm_iout.nii.gz") #only for header info
 clipped_img = nb.Nifti1Image(thala, img.affine, img.header)
-nb.save(clipped_img, '/data/p_02666/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz')
+nb.save(clipped_img, '/mica-mics/thalamus_space_mni/space-MNI125_atlas-thalamus_lh_refined.nii.gz')
 
 
 
