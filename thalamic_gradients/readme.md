@@ -49,7 +49,7 @@ The repo includes code for preprocessing, analysis and plotting.
 
 ### Supp Fig 2.  Additional Thalamocortical Structural Connectivity Gradients.
 - `12_Supp_gradient_3_4.py` - save gradient 3 and 4 as nifti
-- !! plotting
+- `Supp_gradient3_4/plot_gradient_3_4.ipynb` - plot gradients
   
 ### Supp Fig 3.  Thalamocortical Structural Connectivity Gradients - Right Hemisphere (RH).
 - `fig1/01_thalamic_gradients.ipynb` - plotting gradients
