@@ -62,7 +62,7 @@ The repo includes code for preprocessing, analysis and plotting.
 - `13_Supp_individual_gradients_fc.py` - calculate fc gradients at subject level and correlate with group-level
 - `14_Supp_individual_gradients_sc.py` - calculate sc gradients at subject level and correlate with group-level
 - `15_Supp_individual_T1q_maps.py` - get individual qT1 maps and correlate with group-level
-- !! plotting
+- `Supp_individual_diff/individual_grouplevel_corr.ipynb` -  create violinplot
 
 ### Supp Fig 6.  Cortical Projections of Structural Connectivity Gradients and their Association to Functional Connectivity and Structural Covariance - Right Hemisphere (RH)
 - `fig3/on_cortex-right_hem.ipynb` - plotting cortex projections right
