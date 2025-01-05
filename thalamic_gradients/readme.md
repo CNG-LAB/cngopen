@@ -77,6 +77,7 @@ The repo includes code for preprocessing, analysis and plotting.
 - `Supp_thomas_nuclei_projection/sc_thomas nuclei.ipynb` - plotting
 
 ### Supp Fig 9. Thalamic SNR and tSNR
+- `Supp_snr/thalamic_snr.ipynb` - plotting
 
 
 ## **Dependencies**
