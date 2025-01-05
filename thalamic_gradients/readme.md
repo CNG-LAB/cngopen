@@ -53,7 +53,7 @@ The repo includes code for preprocessing, analysis and plotting.
   
 ### Supp Fig 3.  Thalamocortical Structural Connectivity Gradients - Right Hemisphere (RH).
 - `fig1/01_thalamic_gradients.ipynb` - plotting gradients
-- `fig1/02_Decoding_with_Thomas_atlas_lh.ipynb` - Decoding with THOMAS
+- `fig1/02_Decoding_with_Thomas_atlas_right.ipynb` - Decoding with THOMAS
 
 ### Supp Fig 4. Thalamocortical Functional Connectivity Gradients - Right Hemisphere (RH). 
 - `fig2/func_gradients_right.ipynb` - plotting right hem functional gradient
