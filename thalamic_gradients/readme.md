@@ -19,6 +19,7 @@ The repo includes code for preprocessing, analysis and plotting.
 4. `/preproc/flirt_jobs.sh` - prep probtrackx (mask in MNI space but probtrackx runs in diffusion space -> need the transformation between spaces)
 5. `/preproc/probtrackx_jobs.sh` - run probtrackx (probabilistic tracktography)
 6. `/preproc/singularity_mpc_jobs.sh` - micapipe module for qT1 (cortical intensities)
+7. `/preproc/warp_mp2rage_to_mni.sh` - prep for thalamus qT1 extraction (warp to MNI)
 
 ### Fig 1.  Thalamocortical Structural Connectivity Gradients.
 
