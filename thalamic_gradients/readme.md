@@ -13,8 +13,12 @@ Our Project is based on the MICA-MICs dataset (Royer et al., 2022), which can be
 The repo includes code for preprocessing, analysis and plotting. 
 
 ### Preprocessing and Tractography
-
-
+1. `/preproc/singularity_jobs.sh` - run micapipe via singularity container to prepocess dwi data
+2. `/preproc/mr_convert_jobs.sh` - prep for bedpostx
+3. `/preproc/bedpostx_jobs.sh` - run bedpostx
+4. `/preproc/flirt_jobs.sh` - prep probtrackx (mask in MNI space but probtrackx runs in diffusion space -> need the transformation between spaces)
+5. `/preproc/probtrackx_jobs.sh` - run probtrackx (probabilistic tracktography)
+6. `/preproc/singularity_mpc_jobs.sh` - micapipe module for qT1
 
 ### Fig 1.  Thalamocortical Structural Connectivity Gradients.
 
