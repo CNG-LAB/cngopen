@@ -142,19 +142,31 @@ end
 
 %% Contextualize Gradients with cytoarchitectonic classes (von Economo Koskinas; see https://www.karger.com/Article/Abstract/103258 or https://enigma-toolbox.readthedocs.io/en/latest/pages/11.02.voneconomo/index.html)
 %Figure 2D
-%stratify gradients according to cytoarchitectonic classes
+%stratify gradients according to cytoarchitectonic classes 
+%adapted 2025
 ve = dlmread('economo_koskinas_fsa5.csv'); %original order: {'Agranular', 'Frontal', 'Parietal', 'Polar', 'Granular'}
-ve_class = zeros(5, 1);
-surf_G1 = parcel_to_surface(CT_psych_gradient1);
-surf_G2 = parcel_to_surface(CT_psych_gradient2);
+
+% parcellate von economo classes to DK
+label_vector     = dlmread(['aparc_fsa5' '.csv']); 
+uparcel          = unique(label_vector); 
+ve_dk      = zeros(length(uparcel),1); 
+
+for ii = 1:length(uparcel) 
+    thisparcel          = uparcel(ii); 
+    ve_dk(ii)           = mode(ve(label_vector == thisparcel));
+end
+% remove midbrain
+ve_dk(midbrain_parcels)= [];
+
+% average gradient loadings per cyto class
 
 class_meanG1 = nan(1,5);
 class_meanG2 = nan(1,5);
 
 for ii = 1:5
-    id = find(ve == ii);
-    class_meanG1(ii) = mode(surf_G1(id));
-    class_meanG2(ii) = mode(surf_G2(id));
+    id = find(ve_dk == ii);
+    class_meanG1(ii) = mean(CT_psych_gradient1(id));
+    class_meanG2(ii) = mean(CT_psych_gradient2(id));
 end
 classes_spider = [class_meanG1; class_meanG2];
 
