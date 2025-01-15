@@ -13,7 +13,7 @@ Fig1.png![grafik](https://user-images.githubusercontent.com/93781179/155957059-6
 
 ### Hettwer2022_Figure2_Transdiagnostic_Gradients.m
 
-This script runs analyses presented in Figure 2 of the manuscript. It loads ENIGMA summary statistics (Cohen's d maps), computes cross-disorder similarity, derives transdiagnostic gradients and contextualizes derived gradients with cytoarchitectonic and functional data.
+This script runs analyses presented in Figure 2 of the manuscript. It loads ENIGMA summary statistics (Cohen's d maps), computes cross-disorder similarity, derives transdiagnostic gradients and contextualizes derived gradients with cytoarchitectonic and functional data. Please note that this script has been updated in 2025 to adapt the cytoarchitectonic decoding.
 
 Fig2.png![grafik](https://user-images.githubusercontent.com/93781179/155957301-e9c621c6-73f4-4b13-bafd-25ee16875911.png)
 
